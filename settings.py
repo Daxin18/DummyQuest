@@ -1,7 +1,5 @@
 import pygame
 
-pygame.init()
-
 player_hp = 100
 walking_speed = 3
 sprinting_boost = 3
@@ -39,16 +37,6 @@ slime_bullet_TTL = 90
 slime_death_bullet_TTL = 180
 slime_bullet_dmg = 1
 slime_death_bullet_dmg = 3
-slime_bullet_texture = pygame.image.load("textures\\Slime_bullet.xcf")
-player_still = pygame.image.load("textures\\Player_still.xcf")
-player_running = [pygame.image.load("textures\\Player_running_0.xcf"), pygame.image.load("textures\\Player_running_1.xcf")]
-player_bullet_texture = pygame.image.load("textures\\Player_bullet.xcf")
-dash_trail = pygame.image.load("textures\\dash_trail.xcf")
 slime_hp = 30
 slime_sight_range = 450
-
-display = pygame.display.set_mode((1200, 700))
-clock = pygame.time.Clock()
-font = pygame.font.Font('freesansbold.ttf', 32)
-font_health = pygame.font.Font('freesansbold.ttf', 12)
-font_enemies = pygame.font.Font('freesansbold.ttf', 20)
+spawn_cd = 10

@@ -3,7 +3,14 @@ import math
 import random
 
 import settings
+from utils import display, font
 from bullet import Bullet
+
+player_still = pygame.image.load("textures\\Player_still.xcf")
+player_running = [pygame.image.load("textures\\Player_running_0.xcf"),
+                  pygame.image.load("textures\\Player_running_1.xcf")]
+player_bullet_texture = pygame.image.load("textures\\Player_bullet.xcf")
+dash_trail = pygame.image.load("textures\\dash_trail.xcf")
 
 
 class Player:
@@ -27,7 +34,7 @@ class Player:
         self.running_animation_timer = 0
         self.last_dash_activation_x = self.x
         self.last_dash_activation_y = self.y
-        self.dash_trail_copy = settings.dash_trail
+        self.dash_trail_copy = dash_trail
         self.dash_offset_x = 96
         self.dash_offset_y = 96
 
@@ -90,7 +97,7 @@ class Player:
             case num if 130 < num < 150 or -60 < num < -40:     # aka going SE or NW
                 self.dash_offset_x = 76
                 self.dash_offset_y = 76
-        self.dash_trail_copy = pygame.transform.rotate(settings.dash_trail, angle)
+        self.dash_trail_copy = pygame.transform.rotate(dash_trail, angle)
 
     def reset_dash(self):
         if self.dashing:
@@ -105,46 +112,54 @@ class Player:
 
         if self.running:
             if self.running_animation_timer < 30:
-                player_copy = pygame.transform.rotate(settings.player_running[0], angle)
+                player_copy = pygame.transform.rotate(player_running[0], angle)
                 self.running_animation_timer += 1
             elif self.running_animation_timer < 59:
-                player_copy = pygame.transform.rotate(settings.player_running[1], angle)
+                player_copy = pygame.transform.rotate(player_running[1], angle)
                 self.running_animation_timer += 1
             else:
-                player_copy = pygame.transform.rotate(settings.player_running[1], angle)
+                player_copy = pygame.transform.rotate(player_running[1], angle)
                 self.running_animation_timer = 0
         else:
-            player_copy = pygame.transform.rotate(settings.player_still, angle)
+            player_copy = pygame.transform.rotate(player_still, angle)
             if self.running_animation_timer < 30:
                 self.running_animation_timer = 30
             else:
                 self.running_animation_timer = 0
 
         if self.dashing:
-            settings.display.blit(self.dash_trail_copy, (self.x - self.dash_offset_x, self.y - self.dash_offset_y))
+            display.blit(self.dash_trail_copy, (self.x - self.dash_offset_x, self.y - self.dash_offset_y))
 
         correction = 6 * abs(math.sin(2 * math.radians(angle)))
-        settings.display.blit(player_copy,
+        display.blit(player_copy,
                      (self.x - self.width / 2 - correction, self.y - self.height / 2 - correction))
 
     def show_dash_cooldown(self):
         if self.dash_cooldown != 0:
-            cd = settings.font.render("Dash: on cooldown (" + str(round(self.dash_cooldown/60, 1))+"s)", True, (255, 0, 0))
+            cd = font.render("Dash: on cooldown (" + str(round(self.dash_cooldown/60, 1)) + "s)", True, (255, 0, 0))
         else:
-            cd = settings.font.render("Dash: Ready", True, (0, 255, 0))
-        settings.display.blit(cd, (5, settings.display.get_height() - 35))
+            cd = font.render("Dash: Ready", True, (0, 255, 0))
+        display.blit(cd, (5, display.get_height() - 35))
 
-    def distance_to_crosshair(self):
+    def distance_to_crosshair(self, mouse_x, mouse_y):
         return math.sqrt((self.x - mouse_x) ** 2 + (self.y - mouse_y) ** 2)
+
+    def primary_fire(self, mouse_x, mouse_y, player_bullets):
+        player_bullets.append(Bullet(self.x, self.y, mouse_x, mouse_y, settings.bullet_size,
+                                     settings.bullet_TTL, settings.base_bullet_damage,
+                                     player_bullet_texture))
+        self.shooting_penalty = settings.shooting_penalty_time
 
     def shotgun(self, mouse_x, mouse_y, player_bullets):
         if self.shotgun_cooldown == 0:
-            spread = int(self.distance_to_crosshair() / settings.shotgun_spread)
+            spread = int(self.distance_to_crosshair(mouse_x, mouse_y) / settings.shotgun_spread)
             i = 0
             while i < settings.shotgun_pellets:
                 mouse_x_1 = mouse_x + random.randint(-spread, spread)
                 mouse_y_1 = mouse_y + random.randint(-spread, spread)
-                player_bullets.append(Bullet(self.x, self.y, mouse_x_1, mouse_y_1, settings.shotgun_pellet_size, settings.shotgun_pellet_damage))
+                player_bullets.append(Bullet(self.x, self.y, mouse_x_1, mouse_y_1, settings.shotgun_pellet_size,
+                                             settings.bullet_TTL, settings.shotgun_pellet_damage,
+                                             player_bullet_texture))
                 i += 1
             self.shotgun_cooldown = settings.shotgun_cooldown
             self.shotgun_penalty = settings.shotgun_shooting_penalty_time
@@ -153,7 +168,7 @@ class Player:
         if not self.dashing and not self.damaged:
             self.damage_flick_dir = random.randint(0, 3)
             if self.damage_flick_dir == 0:
-                 self.x -= settings.damage_flick
+                self.x -= settings.damage_flick
             elif self.damage_flick_dir == 1:
                 self.y -= settings.damage_flick
             elif self.damage_flick_dir == 2:

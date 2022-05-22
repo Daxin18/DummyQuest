@@ -3,11 +3,12 @@ import math
 import random
 
 import settings
+from utils import display
 
 
 class Bullet:
-    def __init__(self, x, y, dest_x, dest_y, size, damage):
-        self.damage = damage
+    def __init__(self, x, y, dest_x, dest_y, size, ttl, damage, texture):
+        self.dmg = damage
         self.size = size
         self.x = x
         self.y = y
@@ -18,7 +19,8 @@ class Bullet:
         self.vel_x = math.cos(self.angle) * self.speed
         self.vel_y = math.sin(self.angle) * self.speed
         self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.size * 2, self.size * 2)
-        self.TTL = settings.bullet_TTL
+        self.TTL = ttl
+        self.texture = texture
 
     def main(self):
         self.x -= self.vel_x
@@ -26,8 +28,8 @@ class Bullet:
         self.TTL -= 1
         self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.size*2, self.size*2)
         # pygame.draw.rect(display, (0, 255, 0), self.hit_box)
-        settings.display.blit(pygame.transform.scale(settings.player_bullet_texture,
-                              (self.size * 2, self.size * 2)), (self.x - self.size, self.y - self.size))
+        display.blit(pygame.transform.scale(self.texture, (self.size * 2, self.size * 2)),
+                     (self.x - self.size, self.y - self.size))
 
     def damage(self, entity):
         if not entity.damaged:
@@ -42,4 +44,4 @@ class Bullet:
                 entity.y += settings.damage_flick
             entity.damaged = True
             entity.damage_flick_cooldown = settings.damage_flick_cooldown
-        entity.hp -= self.damage
+        entity.hp -= self.dmg

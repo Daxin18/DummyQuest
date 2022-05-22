@@ -1,12 +1,14 @@
 import pygame
 
 import settings
+from utils import display
 
 
 class Dummy:
     def __init__(self, x, y, width, height):
         self.width = width
         self.height = height
+        self.size = width/2
         self.x = x
         self.y = y
         self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
@@ -28,12 +30,16 @@ class Dummy:
                 self.x -= settings.damage_flick
             else:
                 self.y -= settings.damage_flick
+
         self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
-        # pygame.draw.rect(display, (255,0,0), self.hit_box)
-        pygame.draw.circle(settings.display, (160, 90, 80), (self.x, self.y), self.width)
+        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
+        pygame.draw.circle(display, (160, 90, 80), (self.x, self.y), self.width/2)
 
     def attack(self, enemy_bullets):
-        print("Dummy attacked!")
+        self.hp = self.hp
+        # print(enemy_bullets)
+        # print("Dummy attacked!")
 
     def die(self):
+        self.hp = self.hp
         print("Dummy died!")
