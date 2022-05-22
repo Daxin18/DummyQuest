@@ -11,7 +11,7 @@ from dummy import Dummy
 
 pygame.init()
 
-player = Player(display.get_width()/2, display.get_height()/2, 32, 32)
+player = Player(utils.player_x, utils.player_y, 32, 32)
 dummy = Dummy(600, 300, 40, 40)
 player_bullets = []
 enemies = []

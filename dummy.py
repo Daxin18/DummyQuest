@@ -3,6 +3,8 @@ import pygame
 import settings
 from utils import display
 
+dummy_texture = pygame.image.load("textures\\Dummy.xcf")
+
 
 class Dummy:
     def __init__(self, x, y, width, height):
@@ -31,9 +33,10 @@ class Dummy:
             else:
                 self.y -= settings.damage_flick
 
-        self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
+        self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.width, self.height)
         # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
-        pygame.draw.circle(display, (160, 90, 80), (self.x, self.y), self.width/2)
+        # pygame.draw.circle(display, (160, 90, 80), (self.x, self.y), self.width/2)
+        display.blit(dummy_texture, (self.x - self.size, self.y - self.size))
 
     def attack(self, enemy_bullets):
         self.hp = self.hp
