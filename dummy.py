@@ -1,7 +1,8 @@
 import pygame
+import math
 
 import settings
-from utils import display
+from utils import display, player_y, player_x
 
 dummy_texture = pygame.image.load("textures\\Dummy.xcf")
 
@@ -33,10 +34,16 @@ class Dummy:
             else:
                 self.y -= settings.damage_flick
 
-        self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.width, self.height)
+        self.hit_box = pygame.Rect(self.x - self.size + 5, self.y - self.size + 5, self.width - 10, self.height - 10)
         # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
-        # pygame.draw.circle(display, (160, 90, 80), (self.x, self.y), self.width/2)
-        display.blit(dummy_texture, (self.x - self.size, self.y - self.size))
+        self.render()
+
+    def render(self):
+        angle = (180 / math.pi) * -math.atan2(player_y - self.y, player_x - self.x)
+        dummy_copy = pygame.transform.rotate(dummy_texture, angle)
+        correction = 8 * abs(math.sin(2 * math.radians(angle)))
+        display.blit(dummy_copy,
+                     (self.x - self.width / 2 - correction, self.y - self.height / 2 - correction))
 
     def attack(self, enemy_bullets):
         self.hp = self.hp

@@ -10,6 +10,7 @@ from player import Player
 from dummy import Dummy
 
 pygame.init()
+pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
 
 player = Player(utils.player_x, utils.player_y, 32, 32)
 dummy = Dummy(600, 300, 40, 40)
@@ -147,5 +148,6 @@ while True:
     display.blit(utils.font.render("SCORE: " + str(SCORE), True, (0, 0, 255)), (display.get_width()/2 - 70, 20))
     display.blit(utils.font_enemies.render("Enemies alive: " + str(len(enemies)-1), True, (255, 255, 255)),
                  (display.get_width() - 190, 10))
+    player.show_dash_cooldown()
     pygame.display.update()
 
