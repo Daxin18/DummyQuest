@@ -32,16 +32,18 @@ class Bullet:
                      (self.x - self.size, self.y - self.size))
 
     def damage(self, entity):
-        if not entity.damaged:
-            entity.damage_flick_dir = random.randint(0, 3)
-            if entity.damage_flick_dir == 0:
-                entity.x -= settings.damage_flick
-            elif entity.damage_flick_dir == 1:
-                entity.y -= settings.damage_flick
-            elif entity.damage_flick_dir == 2:
-                entity.x += settings.damage_flick
-            else:
-                entity.y += settings.damage_flick
-            entity.damaged = True
-            entity.damage_flick_cooldown = settings.damage_flick_cooldown
-        entity.hp -= self.dmg
+        if entity.damageable:
+            if not entity.damaged:
+                entity.damage_flick_dir = random.randint(0, 3)
+                if entity.damage_flick_dir == 0:
+                    entity.x -= settings.damage_flick
+                elif entity.damage_flick_dir == 1:
+                    entity.y -= settings.damage_flick
+                elif entity.damage_flick_dir == 2:
+                    entity.x += settings.damage_flick
+                else:
+                    entity.y += settings.damage_flick
+                entity.damaged = True
+                entity.damage_flick_cooldown = settings.damage_flick_cooldown
+            entity.hp -= self.dmg
+        return entity.damageable

@@ -37,6 +37,7 @@ class Player:
         self.dash_trail_copy = dash_trail
         self.dash_offset_x = 96
         self.dash_offset_y = 96
+        self.damageable = True
 
     def main(self, mouse_x, mouse_y):
         if self.dash_cooldown != 0:
@@ -47,6 +48,10 @@ class Player:
             self.shotgun_penalty -= 1
         if self.shooting_penalty != 0:
             self.shooting_penalty -= 1
+        self.handle_damage()
+        self.draw_player(mouse_x, mouse_y)
+
+    def handle_damage(self):
         if self.damage_flick_cooldown != 0:
             self.damage_flick_cooldown -= 1
         elif self.damaged:
@@ -59,7 +64,6 @@ class Player:
                 self.x -= settings.damage_flick
             else:
                 self.y -= settings.damage_flick
-        self.draw_player(mouse_x, mouse_y)
 
     def dash(self, keys):
         if self.dash_remaining == settings.dash_duration:

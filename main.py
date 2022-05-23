@@ -8,6 +8,7 @@ from utils import display, display_scroll, move
 from slime import Slime
 from player import Player
 from dummy import Dummy
+from guardian import Guardian
 
 pygame.init()
 pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
@@ -38,10 +39,10 @@ while True:
         for enemy in enemies:
             if bullet.hit_box.colliderect(enemy.hit_box):
                 try:    # if a bullet hits 2 enemies at once (rare occurance) it will throw ValueError
-                    player_bullets.remove(bullet)
+                    if bullet.damage(enemy):
+                        player_bullets.remove(bullet)
                 except ValueError:
                     0
-                bullet.damage(enemy)
 
     for bullet in enemy_bullets:
         if bullet.hit_box.colliderect(player.hit_box):
@@ -98,7 +99,9 @@ while True:
         if spawn_cd != 0:
             spawn_cd -= 1
         elif keys[pygame.K_p]:
-            enemies.append(Slime(random.randint(0, 600), random.randint(0, 800), settings.slime_size))
+            enemies.append(Slime(random.randint(0, display.get_width()), random.randint(0, display.get_height())))
+            enemies.append(Guardian(random.randint(0, display.get_width()), random.randint(0, display.get_height()),
+                                    enemies[0]))
             spawn_cd = settings.spawn_cd
 
     # entities

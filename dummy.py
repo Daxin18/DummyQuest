@@ -19,8 +19,15 @@ class Dummy:
         self.damaged = False
         self.damage_flick_dir = 0
         self.hp = 10000
+        self.damageable = True
 
     def main(self):
+        self.handle_damage()
+        self.hit_box = pygame.Rect(self.x - self.size + 5, self.y - self.size + 5, self.width - 10, self.height - 10)
+        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
+        self.render()
+
+    def handle_damage(self):
         if self.damage_flick_cooldown != 0:
             self.damage_flick_cooldown -= 1
         elif self.damaged:
@@ -33,10 +40,6 @@ class Dummy:
                 self.x -= settings.damage_flick
             else:
                 self.y -= settings.damage_flick
-
-        self.hit_box = pygame.Rect(self.x - self.size + 5, self.y - self.size + 5, self.width - 10, self.height - 10)
-        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
-        self.render()
 
     def render(self):
         angle = (180 / math.pi) * -math.atan2(player_y - self.y, player_x - self.x)

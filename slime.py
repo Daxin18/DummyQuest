@@ -14,8 +14,8 @@ still_animation = [pygame.image.load("textures\\Slime_still_0.xcf"), pygame.imag
 
 
 class Slime:
-    def __init__(self, x, y, size):
-        self.size = size
+    def __init__(self, x, y):
+        self.size = settings.slime_size
         self.x = x
         self.y = y
         self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.size*2, self.size*2)
@@ -29,23 +29,11 @@ class Slime:
         self.behaviour_change_timer = 0
         self.attack_cooldown = settings.slime_attack_cooldown
         self.hp = settings.slime_hp
-
+        self.damageable = True
         self.animation_counter = 0
 
     def main(self):
-        if self.damage_flick_cooldown != 0:
-            self.damage_flick_cooldown -= 1
-        elif self.damaged:
-            self.damaged = False
-            if self.damage_flick_dir == 0:
-                self.x += settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y += settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x -= settings.damage_flick
-            else:
-                self.y -= settings.damage_flick
-
+        self.handle_damage()
         self.behaviour()
         self.x -= self.vel_x
         self.y -= self.vel_y
@@ -59,6 +47,20 @@ class Slime:
         # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         display.blit(pygame.transform.scale(still_animation[texture], (self.size*2, self.size*2)),
                      (self.x - self.size, self.y - self.size))
+
+    def handle_damage(self):
+        if self.damage_flick_cooldown != 0:
+            self.damage_flick_cooldown -= 1
+        elif self.damaged:
+            self.damaged = False
+            if self.damage_flick_dir == 0:
+                self.x += settings.damage_flick
+            elif self.damage_flick_dir == 1:
+                self.y += settings.damage_flick
+            elif self.damage_flick_dir == 2:
+                self.x -= settings.damage_flick
+            else:
+                self.y -= settings.damage_flick
 
     def behaviour(self):
         if self.behaviour_change_timer == 0:

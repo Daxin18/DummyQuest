@@ -40,3 +40,14 @@ slime_death_bullet_dmg = 3
 slime_hp = 30
 slime_sight_range = 450
 spawn_cd = 10
+
+guardian_width = 40
+guardian_height = 80
+guardian_speed = 1
+guardian_idle_time = 300
+guardian_buried_time = 160
+guardian_attack_cast_time = 120
+guardian_min_deviation_range = 50
+guardian_max_deviation_range = 100
+guardian_sight_range = 800
+guardian_hp = 150
