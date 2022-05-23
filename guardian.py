@@ -9,6 +9,7 @@ from bullet import Bullet
 
 texture = pygame.image.load("textures\\drawing.png")
 player_still = pygame.image.load("textures\\Player_still.xcf")
+shield = pygame.image.load("textures\\Guardian_protection.xcf")
 
 
 class Guardian:
@@ -30,8 +31,7 @@ class Guardian:
         self.vel_x = 0
         self.vel_y = 0
         self.texture = pygame.image.load("textures\\drawing.png")
-        self.damageable = True
-        self.guarding.damageable = False
+        self.guarding.protected = True
 
     def main(self):
         self.handle_damage()
@@ -52,6 +52,7 @@ class Guardian:
                 self.y -= settings.damage_flick
 
     def behaviour(self):
+        self.guarding.protected = True
         if self.buried: # buried aka moving
             self.texture = texture
             if self.behaviour_change_timer != 0:
@@ -68,17 +69,17 @@ class Guardian:
                 self.behaviour_change_timer -= 1
             else:
                 self.buried = True
-                self.damageable = False
                 self.behaviour_change_timer = settings.guardian_buried_time
                 deviation_x = random.randint(-settings.guardian_min_deviation_range,
                                              settings.guardian_max_deviation_range)
                 deviation_y = random.randint(-settings.guardian_min_deviation_range,
                                              settings.guardian_max_deviation_range)
-                angle = math.atan2(self.guarding.y + deviation_y, self.guarding.x + deviation_x)
+                angle = math.atan2(self.y - self.guarding.y - deviation_y, self.x - self.guarding.x - deviation_x)
                 self.vel_x = math.cos(angle) * self.speed
                 self.vel_y = math.sin(angle) * self.speed
 
         self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
+        display.blit(shield, (self.guarding.x - self.guarding.size, self.guarding.y +5))
         display.blit(self.texture, (self.x, self.y))
 
     def player_in_range(self):
@@ -88,4 +89,20 @@ class Guardian:
         0
 
     def die(self, enemy_bullets):
-        self.guarding.damageable = True
+        self.guarding.protected = False
+
+    def damage(self, damage):
+        if not self.buried and not self.damaged:
+            self.damage_flick_dir = random.randint(0, 3)
+            if self.damage_flick_dir == 0:
+                self.x -= settings.damage_flick
+            elif self.damage_flick_dir == 1:
+                self.y -= settings.damage_flick
+            elif self.damage_flick_dir == 2:
+                self.x += settings.damage_flick
+            else:
+                self.y += settings.damage_flick
+            self.damaged = True
+            self.damage_flick_cooldown = settings.damage_flick_cooldown
+            self.hp -= damage
+        return not self.buried

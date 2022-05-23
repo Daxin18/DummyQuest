@@ -46,8 +46,8 @@ while True:
 
     for bullet in enemy_bullets:
         if bullet.hit_box.colliderect(player.hit_box):
-            bullet.damage(player)
-            enemy_bullets.remove(bullet)
+            if bullet.damage(player):
+                enemy_bullets.remove(bullet)
 
     # controls
     for event in pygame.event.get():

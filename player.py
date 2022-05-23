@@ -37,7 +37,6 @@ class Player:
         self.dash_trail_copy = dash_trail
         self.dash_offset_x = 96
         self.dash_offset_y = 96
-        self.damageable = True
 
     def main(self, mouse_x, mouse_y):
         if self.dash_cooldown != 0:
@@ -181,4 +180,6 @@ class Player:
                 self.y += settings.damage_flick
             self.damaged = True
             self.damage_flick_cooldown = settings.damage_flick_cooldown
-        self.hp -= damage
+            self.hp -= damage
+        return not self.dashing
+

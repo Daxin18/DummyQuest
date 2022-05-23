@@ -29,7 +29,7 @@ class Slime:
         self.behaviour_change_timer = 0
         self.attack_cooldown = settings.slime_attack_cooldown
         self.hp = settings.slime_hp
-        self.damageable = True
+        self.protected = False
         self.animation_counter = 0
 
     def main(self):
@@ -142,3 +142,19 @@ class Slime:
         enemy_bullets.append(Bullet(self.x, self.y, self.x, self.y - 1, settings.slime_bullet_size,
                                     settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
                                     slime_bullet_texture))
+
+    def damage(self, damage):
+        if not self.protected and not self.damaged:
+            self.damage_flick_dir = random.randint(0, 3)
+            if self.damage_flick_dir == 0:
+                self.x -= settings.damage_flick
+            elif self.damage_flick_dir == 1:
+                self.y -= settings.damage_flick
+            elif self.damage_flick_dir == 2:
+                self.x += settings.damage_flick
+            else:
+                self.y += settings.damage_flick
+            self.damaged = True
+            self.damage_flick_cooldown = settings.damage_flick_cooldown
+            self.hp -= damage
+        return True

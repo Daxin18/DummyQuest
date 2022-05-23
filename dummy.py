@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 import settings
 from utils import display, player_y, player_x
@@ -19,7 +20,7 @@ class Dummy:
         self.damaged = False
         self.damage_flick_dir = 0
         self.hp = 10000
-        self.damageable = True
+        self.protected = False
 
     def main(self):
         self.handle_damage()
@@ -56,3 +57,19 @@ class Dummy:
     def die(self):
         self.hp = self.hp
         print("Dummy died!")
+
+    def damage(self, damage):
+        if not self.protected and not self.damaged:
+            self.damage_flick_dir = random.randint(0, 3)
+            if self.damage_flick_dir == 0:
+                self.x -= settings.damage_flick
+            elif self.damage_flick_dir == 1:
+                self.y -= settings.damage_flick
+            elif self.damage_flick_dir == 2:
+                self.x += settings.damage_flick
+            else:
+                self.y += settings.damage_flick
+            self.damaged = True
+            self.damage_flick_cooldown = settings.damage_flick_cooldown
+            self.hp -= damage
+        return True
