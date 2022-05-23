@@ -130,6 +130,8 @@ class Player:
             else:
                 self.running_animation_timer = 0
 
+        if settings.enable_hit_boxes:
+            pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         if self.dashing:
             display.blit(self.dash_trail_copy, (self.x - self.dash_offset_x, self.y - self.dash_offset_y))
 

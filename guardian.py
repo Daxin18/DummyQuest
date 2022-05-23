@@ -43,7 +43,8 @@ class Guardian:
 
     def main(self):
         self.handle_damage()
-        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
+        if settings.enable_hit_boxes:
+            pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         self.behaviour()
 
     def handle_damage(self):

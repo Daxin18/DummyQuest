@@ -44,7 +44,8 @@ class Slime:
             self.animation_counter = 0
         else:
             self.animation_counter += 1
-        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
+        if settings.enable_hit_boxes:
+            pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         display.blit(pygame.transform.scale(still_animation[texture], (self.size*2, self.size*2)),
                      (self.x - self.size, self.y - self.size))
 

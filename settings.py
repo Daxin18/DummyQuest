@@ -51,3 +51,6 @@ guardian_min_deviation_range = 50
 guardian_max_deviation_range = 100
 guardian_sight_range = 800
 guardian_hp = 150
+
+enable_hit_boxes = True
+enable_bullet_hit_boxes = True

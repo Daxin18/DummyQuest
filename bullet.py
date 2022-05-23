@@ -27,7 +27,8 @@ class Bullet:
         self.y -= self.vel_y
         self.TTL -= 1
         self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.size*2, self.size*2)
-        # pygame.draw.rect(display, (0, 255, 0), self.hit_box)
+        if settings.enable_bullet_hit_boxes:
+            pygame.draw.rect(display, (0, 255, 0), self.hit_box)
         display.blit(pygame.transform.scale(self.texture, (self.size * 2, self.size * 2)),
                      (self.x - self.size, self.y - self.size))
 

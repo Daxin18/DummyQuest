@@ -25,7 +25,8 @@ class Dummy:
     def main(self):
         self.handle_damage()
         self.hit_box = pygame.Rect(self.x - self.size + 5, self.y - self.size + 5, self.width - 10, self.height - 10)
-        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
+        if settings.enable_hit_boxes:
+            pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         self.render()
 
     def handle_damage(self):
