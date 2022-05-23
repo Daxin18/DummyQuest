@@ -9,6 +9,13 @@ from bullet import Bullet
 
 texture = pygame.image.load("textures\\drawing.png")
 player_still = pygame.image.load("textures\\Player_still.xcf")
+standing = [pygame.image.load("textures\\Guardian_standing_0.xcf"),
+            pygame.image.load("textures\\Guardian_standing_1.xcf"),
+            pygame.image.load("textures\\Guardian_standing_2.xcf"),
+            pygame.image.load("textures\\Guardian_standing_3.xcf")]
+buried = [pygame.image.load("textures\\Guardian_buried_0.xcf"),
+          pygame.image.load("textures\\Guardian_buried_1.xcf"),
+          pygame.image.load("textures\\Guardian_buried_2.xcf")]
 shield = pygame.image.load("textures\\Guardian_protection.xcf")
 
 
@@ -32,9 +39,11 @@ class Guardian:
         self.vel_y = 0
         self.texture = pygame.image.load("textures\\drawing.png")
         self.guarding.protected = True
+        self.animation_counter = 0
 
     def main(self):
         self.handle_damage()
+        # pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         self.behaviour()
 
     def handle_damage(self):
@@ -53,18 +62,27 @@ class Guardian:
 
     def behaviour(self):
         self.guarding.protected = True
-        if self.buried: # buried aka moving
-            self.texture = texture
+        if self.buried:  # buried aka moving
+            bur = int(self.animation_counter / 20) - 1
+            if self.animation_counter == 60:
+                self.animation_counter = 0
+            else:
+                self.animation_counter += 1
+            self.texture = buried[bur]
             if self.behaviour_change_timer != 0:
                 self.behaviour_change_timer -= 1
                 self.x -= self.vel_x
                 self.y -= self.vel_y
             else:
                 self.buried = False
-                self.damageable = True
                 self.behaviour_change_timer = settings.guardian_idle_time
         else:
-            self.texture = player_still
+            sta = int(self.animation_counter / 15) - 1
+            if self.animation_counter == 60:
+                self.animation_counter = 0
+            else:
+                self.animation_counter += 1
+            self.texture = standing[sta]
             if self.behaviour_change_timer != 0:
                 self.behaviour_change_timer -= 1
             else:
@@ -80,7 +98,7 @@ class Guardian:
 
         self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
         display.blit(shield, (self.guarding.x - self.guarding.size, self.guarding.y +5))
-        display.blit(self.texture, (self.x, self.y))
+        display.blit(self.texture, (self.x - self.width/2, self.y - self.height/2))
 
     def player_in_range(self):
         return math.sqrt((self.x - utils.player_x) ** 2 + (self.y - utils.player_y) ** 2) <= settings.guardian_sight_range

@@ -41,7 +41,7 @@ slime_hp = 30
 slime_sight_range = 450
 spawn_cd = 10
 
-guardian_width = 40
+guardian_width = 30
 guardian_height = 80
 guardian_speed = 1
 guardian_idle_time = 300
