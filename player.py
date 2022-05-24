@@ -135,9 +135,8 @@ class Player:
         if self.dashing:
             display.blit(self.dash_trail_copy, (self.x - self.dash_offset_x, self.y - self.dash_offset_y))
 
-        correction = 6 * abs(math.sin(2 * math.radians(angle)))
         display.blit(player_copy,
-                     (self.x - self.width / 2 - correction, self.y - self.height / 2 - correction))
+                     (self.x - player_copy.get_width()/2, self.y - player_copy.get_height()/2))
 
     def show_dash_cooldown(self):
         if self.dash_cooldown != 0:
@@ -151,7 +150,7 @@ class Player:
 
     def primary_fire(self, mouse_x, mouse_y, player_bullets):
         player_bullets.append(Bullet(self.x, self.y, mouse_x, mouse_y, settings.bullet_size,
-                                     settings.bullet_TTL, settings.base_bullet_damage,
+                                     settings.bullet_TTL, settings.base_bullet_damage, settings.bullet_speed,
                                      player_bullet_texture))
         self.shooting_penalty = settings.shooting_penalty_time
 
@@ -164,7 +163,7 @@ class Player:
                 mouse_y_1 = mouse_y + random.randint(-spread, spread)
                 player_bullets.append(Bullet(self.x, self.y, mouse_x_1, mouse_y_1, settings.shotgun_pellet_size,
                                              settings.bullet_TTL, settings.shotgun_pellet_damage,
-                                             player_bullet_texture))
+                                             settings.shotgun_pellet_speed, player_bullet_texture))
                 i += 1
             self.shotgun_cooldown = settings.shotgun_cooldown
             self.shotgun_penalty = settings.shotgun_shooting_penalty_time

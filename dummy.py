@@ -46,9 +46,8 @@ class Dummy:
     def render(self):
         angle = (180 / math.pi) * -math.atan2(player_y - self.y, player_x - self.x)
         dummy_copy = pygame.transform.rotate(dummy_texture, angle)
-        correction = 8 * abs(math.sin(2 * math.radians(angle)))
         display.blit(dummy_copy,
-                     (self.x - self.width / 2 - correction, self.y - self.height / 2 - correction))
+                     (self.x - dummy_copy.get_width()/2, self.y - dummy_copy.get_height()/2))
 
     def attack(self, enemy_bullets):
         self.hp = self.hp

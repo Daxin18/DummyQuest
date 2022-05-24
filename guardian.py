@@ -7,8 +7,6 @@ import utils
 from utils import display, player_x, player_y
 from bullet import Bullet
 
-texture = pygame.image.load("textures\\drawing.png")
-player_still = pygame.image.load("textures\\Player_still.xcf")
 standing = [pygame.image.load("textures\\Guardian_standing_0.xcf"),
             pygame.image.load("textures\\Guardian_standing_1.xcf"),
             pygame.image.load("textures\\Guardian_standing_2.xcf"),
@@ -17,6 +15,7 @@ buried = [pygame.image.load("textures\\Guardian_buried_0.xcf"),
           pygame.image.load("textures\\Guardian_buried_1.xcf"),
           pygame.image.load("textures\\Guardian_buried_2.xcf")]
 shield = pygame.image.load("textures\\Guardian_protection.xcf")
+bullet = pygame.image.load("textures\\Guardian_bullet.xcf")
 
 
 class Guardian:
@@ -105,7 +104,11 @@ class Guardian:
         return math.sqrt((self.x - utils.player_x) ** 2 + (self.y - utils.player_y) ** 2) <= settings.guardian_sight_range
 
     def attack(self, enemy_bullets):
-        0
+        timer = settings.guardian_attack_cast_time + self.behaviour_change_timer == settings.guardian_idle_time
+        if not self.buried and timer and self.player_in_range():
+            enemy_bullets.append(Bullet(self.x, self.y - self.height/2 + 10, player_x, player_y,
+                                        settings.guardian_bullet_size, settings.guardian_bullet_TTL,
+                                        settings.guardian_bullet_damage, settings.guardian_bullet_speed, bullet))
 
     def die(self, enemy_bullets):
         self.guarding.protected = False

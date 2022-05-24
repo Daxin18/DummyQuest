@@ -7,14 +7,14 @@ from utils import display
 
 
 class Bullet:
-    def __init__(self, x, y, dest_x, dest_y, size, ttl, damage, texture):
+    def __init__(self, x, y, dest_x, dest_y, size, ttl, damage, speed, texture):
         self.dmg = damage
         self.size = size
         self.x = x
         self.y = y
         self.mouse_x = dest_x
         self.mouse_y = dest_y
-        self.speed = settings.bullet_speed
+        self.speed = speed
         self.angle = math.atan2(y - dest_y, x - dest_x)
         self.vel_x = math.cos(self.angle) * self.speed
         self.vel_y = math.sin(self.angle) * self.speed
