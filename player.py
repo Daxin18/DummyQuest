@@ -155,7 +155,6 @@ class Player:
             self.shotgun_penalty = settings.shotgun_shooting_penalty_time
 
     def damage(self, damage):
-        if not self.dashing and not self.damaged:
+        if not self.dashing:
             give_damage(self, damage)
         return not self.dashing
-

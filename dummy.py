@@ -1,6 +1,5 @@
 import pygame
 import math
-import random
 
 import settings
 from utils import display, player_y, player_x, handle_damage, give_damage
@@ -45,6 +44,6 @@ class Dummy:
         print("Dummy died!")
 
     def damage(self, damage):
-        if not self.protected and not self.damaged:
+        if not self.protected:
             give_damage(self, damage)
         return True

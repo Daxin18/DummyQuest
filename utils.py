@@ -45,15 +45,16 @@ def handle_damage(self):
 
 
 def give_damage(self, damage):
-    self.damage_flick_dir = random.randint(0, 3)
-    if self.damage_flick_dir == 0:
-        self.x -= damage_flick
-    elif self.damage_flick_dir == 1:
-        self.y -= damage_flick
-    elif self.damage_flick_dir == 2:
-        self.x += damage_flick
-    else:
-        self.y += damage_flick
-    self.damaged = True
-    self.damage_flick_cooldown = damage_flick_cooldown
+    if not self.damaged:
+        self.damage_flick_dir = random.randint(0, 3)
+        if self.damage_flick_dir == 0:
+            self.x -= damage_flick
+        elif self.damage_flick_dir == 1:
+            self.y -= damage_flick
+        elif self.damage_flick_dir == 2:
+            self.x += damage_flick
+        else:
+            self.y += damage_flick
+        self.damaged = True
+        self.damage_flick_cooldown = damage_flick_cooldown
     self.hp -= damage

@@ -83,7 +83,7 @@ class Guardian:
                 self.vel_y = math.sin(angle) * self.speed
 
         self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
-        display.blit(shield, (self.guarding.x - self.guarding.size, self.guarding.y +5))
+        display.blit(shield, (self.guarding.x - self.guarding.size, self.guarding.y + 5))
         display.blit(self.texture, (self.x - self.width/2, self.y - self.height/2))
 
     def player_in_range(self):
@@ -100,6 +100,6 @@ class Guardian:
         self.guarding.protected = False
 
     def damage(self, damage):
-        if not self.buried and not self.damaged:
+        if not self.buried:
             give_damage(self, damage)
         return not self.buried

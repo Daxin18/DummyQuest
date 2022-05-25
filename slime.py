@@ -137,6 +137,6 @@ class Slime:
                                     settings.slime_bullet_speed, slime_bullet_texture))
 
     def damage(self, damage):
-        if not self.protected and not self.damaged:
+        if not self.protected:
             give_damage(self, damage)
         return True
