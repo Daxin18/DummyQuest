@@ -3,7 +3,7 @@ import math
 import random
 
 import settings
-from utils import display, font
+from utils import display, font, handle_damage, give_damage
 from bullet import Bullet
 
 player_still = pygame.image.load("textures\\Player_still.xcf")
@@ -47,22 +47,8 @@ class Player:
             self.shotgun_penalty -= 1
         if self.shooting_penalty != 0:
             self.shooting_penalty -= 1
-        self.handle_damage()
+        handle_damage(self)
         self.draw_player(mouse_x, mouse_y)
-
-    def handle_damage(self):
-        if self.damage_flick_cooldown != 0:
-            self.damage_flick_cooldown -= 1
-        elif self.damaged:
-            self.damaged = False
-            if self.damage_flick_dir == 0:
-                self.x += settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y += settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x -= settings.damage_flick
-            else:
-                self.y -= settings.damage_flick
 
     def dash(self, keys):
         if self.dash_remaining == settings.dash_duration:
@@ -170,17 +156,6 @@ class Player:
 
     def damage(self, damage):
         if not self.dashing and not self.damaged:
-            self.damage_flick_dir = random.randint(0, 3)
-            if self.damage_flick_dir == 0:
-                self.x -= settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y -= settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x += settings.damage_flick
-            else:
-                self.y += settings.damage_flick
-            self.damaged = True
-            self.damage_flick_cooldown = settings.damage_flick_cooldown
-            self.hp -= damage
+            give_damage(self, damage)
         return not self.dashing
 

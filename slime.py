@@ -4,7 +4,7 @@ import random
 
 import settings
 import utils
-from utils import display
+from utils import display, handle_damage, give_damage
 from bullet import Bullet
 
 slime_bullet_texture = pygame.image.load("textures\\Slime_bullet.xcf")
@@ -33,7 +33,7 @@ class Slime:
         self.animation_counter = 0
 
     def main(self):
-        self.handle_damage()
+        handle_damage(self)
         self.behaviour()
         self.x -= self.vel_x
         self.y -= self.vel_y
@@ -48,20 +48,6 @@ class Slime:
             pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         display.blit(pygame.transform.scale(still_animation[texture], (self.size*2, self.size*2)),
                      (self.x - self.size, self.y - self.size))
-
-    def handle_damage(self):
-        if self.damage_flick_cooldown != 0:
-            self.damage_flick_cooldown -= 1
-        elif self.damaged:
-            self.damaged = False
-            if self.damage_flick_dir == 0:
-                self.x += settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y += settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x -= settings.damage_flick
-            else:
-                self.y -= settings.damage_flick
 
     def behaviour(self):
         if self.behaviour_change_timer == 0:
@@ -152,16 +138,5 @@ class Slime:
 
     def damage(self, damage):
         if not self.protected and not self.damaged:
-            self.damage_flick_dir = random.randint(0, 3)
-            if self.damage_flick_dir == 0:
-                self.x -= settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y -= settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x += settings.damage_flick
-            else:
-                self.y += settings.damage_flick
-            self.damaged = True
-            self.damage_flick_cooldown = settings.damage_flick_cooldown
-            self.hp -= damage
+            give_damage(self, damage)
         return True

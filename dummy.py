@@ -3,7 +3,7 @@ import math
 import random
 
 import settings
-from utils import display, player_y, player_x
+from utils import display, player_y, player_x, handle_damage, give_damage
 
 dummy_texture = pygame.image.load("textures\\Dummy.xcf")
 
@@ -23,25 +23,11 @@ class Dummy:
         self.protected = False
 
     def main(self):
-        self.handle_damage()
+        handle_damage(self)
         self.hit_box = pygame.Rect(self.x - self.size + 5, self.y - self.size + 5, self.width - 10, self.height - 10)
         if settings.enable_hit_boxes:
             pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         self.render()
-
-    def handle_damage(self):
-        if self.damage_flick_cooldown != 0:
-            self.damage_flick_cooldown -= 1
-        elif self.damaged:
-            self.damaged = False
-            if self.damage_flick_dir == 0:
-                self.x += settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y += settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x -= settings.damage_flick
-            else:
-                self.y -= settings.damage_flick
 
     def render(self):
         angle = (180 / math.pi) * -math.atan2(player_y - self.y, player_x - self.x)
@@ -60,16 +46,5 @@ class Dummy:
 
     def damage(self, damage):
         if not self.protected and not self.damaged:
-            self.damage_flick_dir = random.randint(0, 3)
-            if self.damage_flick_dir == 0:
-                self.x -= settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y -= settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x += settings.damage_flick
-            else:
-                self.y += settings.damage_flick
-            self.damaged = True
-            self.damage_flick_cooldown = settings.damage_flick_cooldown
-            self.hp -= damage
+            give_damage(self, damage)
         return True

@@ -4,7 +4,7 @@ import random
 
 import settings
 import utils
-from utils import display, player_x, player_y
+from utils import display, player_x, player_y, handle_damage, give_damage
 from bullet import Bullet
 
 standing = [pygame.image.load("textures\\Guardian_standing_0.xcf"),
@@ -41,24 +41,10 @@ class Guardian:
         self.animation_counter = 0
 
     def main(self):
-        self.handle_damage()
+        handle_damage(self)
         if settings.enable_hit_boxes:
             pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         self.behaviour()
-
-    def handle_damage(self):
-        if self.damage_flick_cooldown != 0:
-            self.damage_flick_cooldown -= 1
-        elif self.damaged:
-            self.damaged = False
-            if self.damage_flick_dir == 0:
-                self.x += settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y += settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x -= settings.damage_flick
-            else:
-                self.y -= settings.damage_flick
 
     def behaviour(self):
         self.guarding.protected = True
@@ -115,16 +101,5 @@ class Guardian:
 
     def damage(self, damage):
         if not self.buried and not self.damaged:
-            self.damage_flick_dir = random.randint(0, 3)
-            if self.damage_flick_dir == 0:
-                self.x -= settings.damage_flick
-            elif self.damage_flick_dir == 1:
-                self.y -= settings.damage_flick
-            elif self.damage_flick_dir == 2:
-                self.x += settings.damage_flick
-            else:
-                self.y += settings.damage_flick
-            self.damaged = True
-            self.damage_flick_cooldown = settings.damage_flick_cooldown
-            self.hp -= damage
+            give_damage(self, damage)
         return not self.buried
