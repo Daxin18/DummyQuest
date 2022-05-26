@@ -1,4 +1,3 @@
-import pygame
 
 player_hp = 100
 walking_speed = 3

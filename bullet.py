@@ -1,6 +1,5 @@
 import pygame
 import math
-import random
 
 import settings
 from utils import display

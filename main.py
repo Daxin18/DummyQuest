@@ -4,21 +4,12 @@ import random
 
 import settings
 import utils
-from utils import display, display_scroll, move
+from utils import display, display_scroll, move, enemies, enemy_bullets, player, player_bullets
 from slime import Slime
-from player import Player
-from dummy import Dummy
 from guardian import Guardian
 
 pygame.init()
 pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
-
-player = Player(utils.player_x, utils.player_y, 32, 32)
-dummy = Dummy(600, 300, 40, 40)
-player_bullets = []
-enemies = []
-enemy_bullets = []
-enemies.append(dummy)
 
 spawn_cd = settings.spawn_cd
 SCORE = 0
@@ -80,19 +71,19 @@ while True:
 
     # movement
     if keys[pygame.K_a]:
-        move(display_scroll, player_bullets, enemy_bullets, enemies, environment_speed, 0)
+        move(display_scroll, environment_speed, 0)
     if keys[pygame.K_w]:
-        move(display_scroll, player_bullets, enemy_bullets, enemies, 0, environment_speed)
+        move(display_scroll, 0, environment_speed)
     if keys[pygame.K_s]:
-        move(display_scroll, player_bullets, enemy_bullets, enemies, 0, -environment_speed)
+        move(display_scroll, 0, -environment_speed)
     if keys[pygame.K_d]:
-        move(display_scroll, player_bullets, enemy_bullets, enemies, -environment_speed, 0)
+        move(display_scroll, -environment_speed, 0)
     if keys[pygame.K_LCTRL]:
         display.blit(utils.font_health.render("HP: " + str(player.hp), True, (255, 255, 255)),
-                                              (player.x, player.y + player.height/2))
+                     (player.x, player.y + player.height/2))
         for enemy in enemies:
             display.blit(utils.font_health.render("HP: " + str(enemy.hp), True, (255, 255, 255)),
-                               (enemy.x, enemy.y + enemy.size))
+                         (enemy.x, enemy.y + enemy.size))
 
     # developer keys
     if settings.dev_keys:
@@ -153,4 +144,3 @@ while True:
                  (display.get_width() - 190, 10))
     player.show_dash_cooldown()
     pygame.display.update()
-

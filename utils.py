@@ -1,32 +1,36 @@
 import pygame
 import random
 from settings import damage_flick, damage_flick_cooldown
+from player import Player
+from dummy import Dummy
 
 pygame.init()
 
 display = pygame.display.set_mode((1200, 700))
 display_scroll = [0, 0]
 
+player_x = display.get_width()/2
+player_y = display.get_height()/2
+player = Player(player_x, player_y, 32, 32)
+
+dummy = Dummy(600, 300, 40, 40)
+player_bullets = []
+enemies = []
+enemy_bullets = []
+enemies.append(dummy)
+
 clock = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 32)
 font_health = pygame.font.Font('freesansbold.ttf', 12)
 font_enemies = pygame.font.Font('freesansbold.ttf', 20)
-player_x = display.get_width()/2
-player_y = display.get_height()/2
 
 
-def move(d_scroll, p_bul, e_bul, e, x, y):
+def move(d_scroll, x, y):
     d_scroll[0] += x
     d_scroll[1] += y
-    for bullet in p_bul:
-        bullet.x += x
-        bullet.y += y
-    for bullet in e_bul:
-        bullet.x += x
-        bullet.y += y
-    for enemy in e:
-        enemy.x += x
-        enemy.y += y
+    for entity in (*player_bullets, enemy_bullets, enemies):
+        entity.x += x
+        entity.y += y
 
 
 def handle_damage(self):
