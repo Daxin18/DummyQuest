@@ -4,7 +4,7 @@ import random
 
 import settings
 import utils
-from utils import display, player_x, player_y, handle_damage, give_damage
+from utils import display, player_x, player_y, handle_damage, give_damage, enemy_bullets
 from bullet import Bullet
 
 standing = [pygame.image.load("textures\\Guardian_standing_0.xcf"),
@@ -89,14 +89,14 @@ class Guardian:
     def player_in_range(self):
         return math.sqrt((self.x - utils.player_x) ** 2 + (self.y - utils.player_y) ** 2) <= settings.guardian_sight_range
 
-    def attack(self, enemy_bullets):
+    def attack(self):
         timer = settings.guardian_attack_cast_time + self.behaviour_change_timer == settings.guardian_idle_time
         if not self.buried and timer and self.player_in_range():
             enemy_bullets.append(Bullet(self.x, self.y - self.height/2 + 10, player_x, player_y,
                                         settings.guardian_bullet_size, settings.guardian_bullet_TTL,
                                         settings.guardian_bullet_damage, settings.guardian_bullet_speed, bullet))
 
-    def die(self, enemy_bullets):
+    def die(self):
         self.guarding.protected = False
 
     def damage(self, damage):

@@ -4,12 +4,19 @@ import random
 
 import settings
 import utils
-from utils import display, display_scroll, move, enemies, enemy_bullets, player, player_bullets
+from utils import display, display_scroll, move, enemies, enemy_bullets, player_bullets
 from slime import Slime
 from guardian import Guardian
+from player import Player
+from dummy import Dummy
 
 pygame.init()
 pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
+
+player = Player(utils.player_x, utils.player_y, 32, 32)
+
+dummy = Dummy(600, 300, 40, 40)
+enemies.append(dummy)
 
 spawn_cd = settings.spawn_cd
 SCORE = 0
@@ -47,9 +54,9 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN and not player.running:
             if event.button == 1:
-                player.primary_fire(mouse_x, mouse_y, player_bullets)
+                player.primary_fire(mouse_x, mouse_y)
             if event.button == 3:
-                player.shotgun(mouse_x, mouse_y, player_bullets)
+                player.shotgun(mouse_x, mouse_y)
 
     keys = pygame.key.get_pressed()
 
@@ -99,10 +106,10 @@ while True:
     player.main(mouse_x, mouse_y)
     for enemy in enemies:
         enemy.main()
-        enemy.attack(enemy_bullets)
+        enemy.attack()
         if enemy.hp <= 0:
             enemies.remove(enemy)
-            enemy.die(enemy_bullets)
+            enemy.die()
             SCORE += 1
     # bullets
     for bullet in player_bullets:

@@ -34,7 +34,7 @@ class Dummy:
         display.blit(dummy_copy,
                      (self.x - dummy_copy.get_width()/2, self.y - dummy_copy.get_height()/2))
 
-    def attack(self, enemy_bullets):
+    def attack(self):
         self.hp = self.hp
         # print(enemy_bullets)
         # print("Dummy attacked!")
