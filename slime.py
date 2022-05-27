@@ -4,7 +4,7 @@ import random
 
 import settings
 import utils
-from utils import display, handle_damage, give_damage, enemy_bullets
+from utils import display, handle_damage, give_damage, enemy_bullets, display_scroll
 from bullet import Bullet
 
 slime_bullet_texture = pygame.image.load("textures\\Slime_bullet.xcf")
@@ -37,7 +37,8 @@ class Slime:
         self.behaviour()
         self.x -= self.vel_x
         self.y -= self.vel_y
-        self.hit_box = pygame.Rect(self.x - self.size, self.y - self.size, self.size * 2, self.size * 2)
+        self.hit_box = pygame.Rect(self.x - self.size + display_scroll[0],
+                                   self.y - self.size + display_scroll[1], self.size * 2, self.size * 2)
 
         texture = int(self.animation_counter/12) - 1
         if self.animation_counter == 60:
@@ -47,7 +48,7 @@ class Slime:
         if settings.enable_hit_boxes:
             pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         display.blit(pygame.transform.scale(still_animation[texture], (self.size*2, self.size*2)),
-                     (self.x - self.size, self.y - self.size))
+                     (self.x - self.size + display_scroll[0], self.y - self.size + display_scroll[1]))
 
     def behaviour(self):
         if self.behaviour_change_timer == 0:
@@ -62,7 +63,9 @@ class Slime:
             self.behaviour_change_timer -= 1
 
     def player_in_range(self):
-        return math.sqrt((self.x - utils.player_x) ** 2 + (self.y - utils.player_y) ** 2) <= settings.slime_sight_range
+        return math.sqrt((self.x + display_scroll[0] - utils.player_x) ** 2 +
+                         (self.y + display_scroll[0] - utils.player_y) ** 2)\
+               <= settings.slime_sight_range
 
     def follow_player(self):
         deviation_x = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)
@@ -82,16 +85,16 @@ class Slime:
             enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y, settings.slime_bullet_size,
                                         settings.slime_bullet_TTL, settings.slime_bullet_dmg,
                                         settings.slime_bullet_speed, slime_bullet_texture))
-            enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y + 2, settings.slime_bullet_size,
+            enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y + math.sqrt(3), settings.slime_bullet_size,
                                         settings.slime_bullet_TTL, settings.slime_bullet_dmg,
                                         settings.slime_bullet_speed, slime_bullet_texture))
-            enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y + 2, settings.slime_bullet_size,
+            enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y + math.sqrt(3), settings.slime_bullet_size,
                                         settings.slime_bullet_TTL, settings.slime_bullet_dmg,
                                         settings.slime_bullet_speed, slime_bullet_texture))
-            enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y - 2, settings.slime_bullet_size,
+            enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y - math.sqrt(3), settings.slime_bullet_size,
                                         settings.slime_bullet_TTL, settings.slime_bullet_dmg,
                                         settings.slime_bullet_speed, slime_bullet_texture))
-            enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y - 2, settings.slime_bullet_size,
+            enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y - math.sqrt(3), settings.slime_bullet_size,
                                         settings.slime_bullet_TTL, settings.slime_bullet_dmg,
                                         settings.slime_bullet_speed, slime_bullet_texture))
             self.attack_cooldown = settings.slime_attack_cooldown

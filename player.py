@@ -137,7 +137,7 @@ class Player:
     def primary_fire(self, mouse_x, mouse_y):
         player_bullets.append(Bullet(self.x, self.y, mouse_x, mouse_y, settings.bullet_size,
                                      settings.bullet_TTL, settings.base_bullet_damage, settings.bullet_speed,
-                                     player_bullet_texture))
+                                     player_bullet_texture, True))
         self.shooting_penalty = settings.shooting_penalty_time
 
     def shotgun(self, mouse_x, mouse_y):
@@ -149,7 +149,7 @@ class Player:
                 mouse_y_1 = mouse_y + random.randint(-spread, spread)
                 player_bullets.append(Bullet(self.x, self.y, mouse_x_1, mouse_y_1, settings.shotgun_pellet_size,
                                              settings.bullet_TTL, settings.shotgun_pellet_damage,
-                                             settings.shotgun_pellet_speed, player_bullet_texture))
+                                             settings.shotgun_pellet_speed, player_bullet_texture, True))
                 i += 1
             self.shotgun_cooldown = settings.shotgun_cooldown
             self.shotgun_penalty = settings.shotgun_shooting_penalty_time

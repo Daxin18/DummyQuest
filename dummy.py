@@ -2,7 +2,7 @@ import pygame
 import math
 
 import settings
-from utils import display, player_y, player_x, handle_damage, give_damage
+from utils import display, player_y, player_x, handle_damage, give_damage, display_scroll
 
 dummy_texture = pygame.image.load("textures\\Dummy.xcf")
 
@@ -23,7 +23,8 @@ class Dummy:
 
     def main(self):
         handle_damage(self)
-        self.hit_box = pygame.Rect(self.x - self.size + 5, self.y - self.size + 5, self.width - 10, self.height - 10)
+        self.hit_box = pygame.Rect(self.x - self.size + 5 + display_scroll[0],
+                                   self.y - self.size + 5 + display_scroll[1], self.width - 10, self.height - 10)
         if settings.enable_hit_boxes:
             pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         self.render()
@@ -32,7 +33,8 @@ class Dummy:
         angle = (180 / math.pi) * -math.atan2(player_y - self.y, player_x - self.x)
         dummy_copy = pygame.transform.rotate(dummy_texture, angle)
         display.blit(dummy_copy,
-                     (self.x - dummy_copy.get_width()/2, self.y - dummy_copy.get_height()/2))
+                     (self.x - dummy_copy.get_width()/2 + display_scroll[0],
+                      self.y - dummy_copy.get_height()/2 + display_scroll[1]))
 
     def attack(self):
         self.hp = self.hp

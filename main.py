@@ -78,19 +78,19 @@ while True:
 
     # movement
     if keys[pygame.K_a]:
-        move(display_scroll, environment_speed, 0)
+        move(environment_speed, 0)
     if keys[pygame.K_w]:
-        move(display_scroll, 0, environment_speed)
+        move(0, environment_speed)
     if keys[pygame.K_s]:
-        move(display_scroll, 0, -environment_speed)
+        move(0, -environment_speed)
     if keys[pygame.K_d]:
-        move(display_scroll, -environment_speed, 0)
+        move(-environment_speed, 0)
     if keys[pygame.K_LCTRL]:
         display.blit(utils.font_health.render("HP: " + str(player.hp), True, (255, 255, 255)),
                      (player.x, player.y + player.height/2))
         for enemy in enemies:
             display.blit(utils.font_health.render("HP: " + str(enemy.hp), True, (255, 255, 255)),
-                         (enemy.x, enemy.y + enemy.size))
+                         (enemy.x + display_scroll[0], enemy.y + enemy.size + display_scroll[1]))
 
     # developer keys
     if settings.dev_keys:

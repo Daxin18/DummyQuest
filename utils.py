@@ -20,12 +20,9 @@ font_health = pygame.font.Font('freesansbold.ttf', 12)
 font_enemies = pygame.font.Font('freesansbold.ttf', 20)
 
 
-def move(d_scroll, x, y):
-    d_scroll[0] += x
-    d_scroll[1] += y
-    for entity in (*player_bullets, *enemy_bullets, *enemies):
-        entity.x += x
-        entity.y += y
+def move(x, y):
+    display_scroll[0] += x
+    display_scroll[1] += y
 
 
 def handle_damage(self):
