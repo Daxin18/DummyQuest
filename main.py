@@ -1,7 +1,6 @@
 import pygame
 
 import utils
-from game import Game
 from menu import Menu
 
 if __name__ == '__main__':
