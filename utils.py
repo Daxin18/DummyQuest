@@ -23,6 +23,7 @@ font_health = pygame.font.Font('freesansbold.ttf', 12)
 font_enemies = pygame.font.Font('freesansbold.ttf', 20)
 
 game_running = False
+running = True
 
 
 def move(x, y):

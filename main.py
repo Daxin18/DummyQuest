@@ -2,10 +2,12 @@ import pygame
 
 import utils
 from game import Game
+from menu import Menu
 
 if __name__ == '__main__':
     pygame.init()
-    game = Game()
-    utils.game_running = True
-    while utils.game_running:
-        game.main()
+    menu = Menu()
+    while utils.running:
+        menu.main()
+        while utils.game_running:
+            menu.game.main()
