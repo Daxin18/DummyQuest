@@ -49,3 +49,6 @@ class Dummy:
         if not self.protected:
             give_damage(self, damage)
         return True
+
+    def render_solid(self): # needs to be implemented to enable collision, subject to change
+        self.hp = self.hp

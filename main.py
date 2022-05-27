@@ -19,14 +19,15 @@ player = Player(utils.player_x, utils.player_y, 32, 32)
 
 dummy = Dummy(600, 300, 40, 40)
 enemies.append(dummy)
+solids.append(dummy)
 for i in range(25):
     r_x = random.randint(player.x - 1000, player.x + 1000)
     r_y = random.randint(player.y - 1000, player.y + 1000)
     while 550 < r_x < 650 and 250 < r_y < 350:
         r_x = random.randint(player.x - 1000, player.x + 1000)
         r_y = random.randint(player.y - 1000, player.y + 1000)
-    r_w = random.randint(32, 64)
-    r_h = random.randint(32, 64)
+    r_w = random.randint(45, 70)
+    r_h = random.randint(45, 70)
     solids.append(Rock(r_x, r_y, r_w, r_h))
 for i in range(40):
     r_x = random.randint(player.x - 1000, player.x + 1000)
@@ -37,7 +38,8 @@ for i in range(40):
     r_s = random.randint(25, 40)
     assets.append(Tree(r_x, r_y, r_s))
 
-spawn_cd = settings.spawn_cd
+spawn_cd = 0
+hit_box_cd = 0
 SCORE = 0
 
 while True:
@@ -69,7 +71,7 @@ while True:
                     enemy_bullets.remove(bullet)
 
     for solid in solids:
-        solid.check_player_collision(player)
+        utils.check_player_collision(solid, player)
         solid.render_solid()
 
     # controls
@@ -130,6 +132,11 @@ while True:
             enemies.append(Guardian(random.randint(0, display.get_width()), random.randint(0, display.get_height()),
                                     enemies[0]))
             spawn_cd = settings.spawn_cd
+        if hit_box_cd != 0:
+            hit_box_cd -= 1
+        elif keys[pygame.K_h]:
+            settings.enable_hit_boxes = not settings.enable_hit_boxes
+            hit_box_cd = 20
 
     # entities
     player.main(mouse_x, mouse_y)

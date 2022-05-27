@@ -1,6 +1,6 @@
 import pygame
 import random
-from settings import damage_flick, damage_flick_cooldown
+from settings import damage_flick, damage_flick_cooldown, collision_tolerance
 
 pygame.init()
 
@@ -57,3 +57,24 @@ def give_damage(self, damage):
         self.damaged = True
         self.damage_flick_cooldown = damage_flick_cooldown
     self.hp -= damage
+
+
+def check_player_collision(solid, player):
+    if solid.hit_box.colliderect(pygame.Rect(player.x - player.width / 2 - 10, player.y - player.height / 2 - 10,
+                                             player.width + 20, player.height + 20)):
+        top = player.hit_box.top - solid.hit_box.bottom
+        bottom = player.hit_box.bottom - solid.hit_box.top
+        right = player.hit_box.right - solid.hit_box.left
+        left = player.hit_box.left - solid.hit_box.right
+        if abs(top) < collision_tolerance:   # top collision
+            collision_table[1] = 1
+            print("top collision")
+        if abs(bottom) < collision_tolerance:  # bottom collision
+            collision_table[1] = -1
+            print("bottom collision")
+        if abs(right) < collision_tolerance:  # right collision
+            collision_table[0] = 1
+            print("right collision")
+        if abs(left) < collision_tolerance:  # left collision
+            collision_table[0] = -1
+            print("left collision")
