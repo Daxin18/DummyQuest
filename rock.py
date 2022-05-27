@@ -1,7 +1,7 @@
 import pygame
 
 import settings
-from utils import display, collision_table, display_scroll
+from utils import display, display_scroll
 
 texture = pygame.image.load("textures\\Rock.xcf")
 

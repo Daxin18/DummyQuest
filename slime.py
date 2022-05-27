@@ -4,7 +4,7 @@ import random
 
 import settings
 import utils
-from utils import display, handle_damage, give_damage, enemy_bullets, display_scroll
+from utils import display, handle_damage, give_damage, display_scroll
 from bullet import Bullet
 
 slime_bullet_texture = pygame.image.load("textures\\Slime_bullet.xcf")
@@ -77,7 +77,7 @@ class Slime:
         deviation_y = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)
         self.angle = math.atan2(self.y + deviation_y, self.x + deviation_x)
 
-    def attack(self):
+    def attack(self, enemy_bullets):
         if self.attack_cooldown == 0 and self.player_in_range():
             enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y, settings.slime_bullet_size,
                                         settings.slime_bullet_TTL, settings.slime_bullet_dmg,
@@ -101,7 +101,7 @@ class Slime:
         elif self.attack_cooldown != 0:
             self.attack_cooldown -= 1
 
-    def die(self):
+    def die(self, enemy_bullets):
         enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y, settings.slime_bullet_size,
                                     settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
                                     settings.slime_bullet_speed, slime_bullet_texture))

@@ -36,12 +36,12 @@ class Dummy:
                      (self.x - dummy_copy.get_width()/2 + display_scroll[0],
                       self.y - dummy_copy.get_height()/2 + display_scroll[1]))
 
-    def attack(self):
+    def attack(self, enemy_bullets):
         self.hp = self.hp
         # print(enemy_bullets)
         # print("Dummy attacked!")
 
-    def die(self):
+    def die(self, enemy_bullets):
         self.hp = self.hp
         print("Dummy died!")
 

@@ -3,7 +3,7 @@ import math
 import random
 
 import settings
-from utils import display, font, handle_damage, give_damage, player_bullets
+from utils import display, font, handle_damage, give_damage
 from bullet import Bullet
 
 player_still = pygame.image.load("textures\\Player_still.xcf")
@@ -134,13 +134,13 @@ class Player:
     def distance_to_crosshair(self, mouse_x, mouse_y):
         return math.sqrt((self.x - mouse_x) ** 2 + (self.y - mouse_y) ** 2)
 
-    def primary_fire(self, mouse_x, mouse_y):
+    def primary_fire(self, mouse_x, mouse_y, player_bullets):
         player_bullets.append(Bullet(self.x, self.y, mouse_x, mouse_y, settings.bullet_size,
                                      settings.bullet_TTL, settings.base_bullet_damage, settings.bullet_speed,
                                      player_bullet_texture, True))
         self.shooting_penalty = settings.shooting_penalty_time
 
-    def shotgun(self, mouse_x, mouse_y):
+    def shotgun(self, mouse_x, mouse_y, player_bullets):
         if self.shotgun_cooldown == 0:
             spread = int(self.distance_to_crosshair(mouse_x, mouse_y) / settings.shotgun_spread)
             i = 0
