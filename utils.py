@@ -6,6 +6,7 @@ pygame.init()
 
 display = pygame.display.set_mode((1200, 700))
 display_scroll = [0, 0]
+collision_table = [0, 0]    # collision on x, collision on y
 
 player_x = display.get_width()/2
 player_y = display.get_height()/2
@@ -13,6 +14,8 @@ player_y = display.get_height()/2
 player_bullets = []
 enemies = []
 enemy_bullets = []
+solids = []  # aka things you can collide with
+assets = []
 
 clock = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 32)

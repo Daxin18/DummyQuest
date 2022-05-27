@@ -4,11 +4,13 @@ import random
 
 import settings
 import utils
-from utils import display, display_scroll, move, enemies, enemy_bullets, player_bullets
+from utils import display, display_scroll, move, enemies, enemy_bullets, player_bullets, solids, collision_table, assets
 from slime import Slime
 from guardian import Guardian
 from player import Player
 from dummy import Dummy
+from rock import Rock
+from tree import Tree
 
 pygame.init()
 pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
@@ -17,6 +19,23 @@ player = Player(utils.player_x, utils.player_y, 32, 32)
 
 dummy = Dummy(600, 300, 40, 40)
 enemies.append(dummy)
+for i in range(25):
+    r_x = random.randint(player.x - 1000, player.x + 1000)
+    r_y = random.randint(player.y - 1000, player.y + 1000)
+    while 550 < r_x < 650 and 250 < r_y < 350:
+        r_x = random.randint(player.x - 1000, player.x + 1000)
+        r_y = random.randint(player.y - 1000, player.y + 1000)
+    r_w = random.randint(32, 64)
+    r_h = random.randint(32, 64)
+    solids.append(Rock(r_x, r_y, r_w, r_h))
+for i in range(40):
+    r_x = random.randint(player.x - 1000, player.x + 1000)
+    r_y = random.randint(player.y - 1000, player.y + 1000)
+    while 550 < r_x < 650 and 250 < r_y < 350:
+        r_x = random.randint(player.x - 1000, player.x + 1000)
+        r_y = random.randint(player.y - 1000, player.y + 1000)
+    r_s = random.randint(25, 40)
+    assets.append(Tree(r_x, r_y, r_s))
 
 spawn_cd = settings.spawn_cd
 SCORE = 0
@@ -26,7 +45,8 @@ while True:
         break   # subject to change
 
     display.fill((105, 105, 105))
-    entity_scroll = [0, 0]
+    collision_table[0] = 0
+    collision_table[1] = 0
 
     utils.clock.tick(60)
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -34,18 +54,23 @@ while True:
 
     # collisions
     for bullet in player_bullets:
-        for enemy in enemies:
-            if bullet.hit_box.colliderect(enemy.hit_box):
+        for entity in [*enemies, *solids]:
+            if bullet.hit_box.colliderect(entity.hit_box):
                 try:    # if a bullet hits 2 enemies at once (rare occurance) it will throw ValueError
-                    if bullet.damage(enemy):
+                    if bullet.damage(entity):
                         player_bullets.remove(bullet)
                 except ValueError:
                     0
 
     for bullet in enemy_bullets:
-        if bullet.hit_box.colliderect(player.hit_box):
-            if bullet.damage(player):
-                enemy_bullets.remove(bullet)
+        for entity in [player, *solids]:
+            if bullet.hit_box.colliderect(entity.hit_box):
+                if bullet.damage(entity):
+                    enemy_bullets.remove(bullet)
+
+    for solid in solids:
+        solid.check_player_collision(player)
+        solid.render_solid()
 
     # controls
     for event in pygame.event.get():
@@ -78,13 +103,17 @@ while True:
 
     # movement
     if keys[pygame.K_a]:
-        move(environment_speed, 0)
+        if collision_table[0] >= 0:
+            move(environment_speed, 0)
     if keys[pygame.K_w]:
-        move(0, environment_speed)
+        if collision_table[1] <= 0:
+            move(0, environment_speed)
     if keys[pygame.K_s]:
-        move(0, -environment_speed)
+        if collision_table[1] >= 0:
+            move(0, -environment_speed)
     if keys[pygame.K_d]:
-        move(-environment_speed, 0)
+        if collision_table[0] <= 0:
+            move(-environment_speed, 0)
     if keys[pygame.K_LCTRL]:
         display.blit(utils.font_health.render("HP: " + str(player.hp), True, (255, 255, 255)),
                      (player.x, player.y + player.height/2))
@@ -122,12 +151,11 @@ while True:
             bullet.main()
         else:
             enemy_bullets.remove(bullet)
+
     # assets
-    pygame.draw.circle(display, (40, 200, 40), (200 + display_scroll[0], 300 + display_scroll[1]), 30)
-    pygame.draw.circle(display, (40, 200, 40), (600 + display_scroll[0], 135 + display_scroll[1]), 30)
-    pygame.draw.circle(display, (40, 200, 40), (124 + display_scroll[0], 347 + display_scroll[1]), 30)
-    pygame.draw.circle(display, (40, 200, 40), (423 + display_scroll[0], 564 + display_scroll[1]), 30)
-    pygame.draw.circle(display, (40, 200, 40), (96 + display_scroll[0], 15 + display_scroll[1]), 30)
+    for asset in assets:
+        asset.render_asset()
+
     # crosshair
     pygame.draw.rect(display, (255, 255, 255), (mouse_x-1, mouse_y + settings.crosshair_size + 5, 2, 5))
     pygame.draw.rect(display, (255, 255, 255), (mouse_x-1, mouse_y - settings.crosshair_size - 10, 2, 5))

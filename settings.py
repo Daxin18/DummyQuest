@@ -58,3 +58,5 @@ guardian_bullet_TTL = 120
 
 enable_hit_boxes = False
 enable_bullet_hit_boxes = False
+
+rock_collision_tolerance = dash_speed + sprinting_boost + walking_speed + 25
