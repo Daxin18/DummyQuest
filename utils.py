@@ -63,8 +63,7 @@ def give_damage(self, damage):
 
 
 def check_player_collision(solid, player):
-    if solid.hit_box.colliderect(pygame.Rect(player.x - player.width / 2 - 10, player.y - player.height / 2 - 10,
-                                             player.width + 20, player.height + 20)):
+    if solid.hit_box.colliderect(player.hit_box):
         top = player.hit_box.top - solid.hit_box.bottom
         bottom = player.hit_box.bottom - solid.hit_box.top
         right = player.hit_box.right - solid.hit_box.left
