@@ -11,6 +11,7 @@ from player import Player
 from dummy import Dummy
 from rock import Rock
 from tree import Tree
+from map import TileMap, SpriteSheet
 
 
 class Game:
@@ -35,18 +36,20 @@ class Game:
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
         self.environment_speed = settings.walking_speed
 
-        self.generate_terrain()
+        self.generate_random_terrain()
+        self.tmap = self.initialize_map()
 
     def main(self):
         self.check_for_end()
         self.reset_parameters()
         self.handle_collisions()
         self.handle_controls()
+        self.tmap.draw_map()
         self.render_stuff()
         self.render_hud()
         pygame.display.update()
 
-    def generate_terrain(self):
+    def generate_random_terrain(self):
         for i in range(settings.rock_number):
             r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
             r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
@@ -99,7 +102,6 @@ class Game:
 
         for solid in self.solids:
             utils.check_player_collision(solid, self.player)
-            solid.render_solid()
 
     def handle_controls(self):
         # controls
@@ -189,7 +191,8 @@ class Game:
                 bullet.main()
             else:
                 self.enemy_bullets.remove(bullet)
-
+        for solid in self.solids:
+            solid.render_solid()
         # assets
         for asset in self.assets:
             asset.render_asset()
@@ -216,3 +219,9 @@ class Game:
         display.blit(utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),
                      (display.get_width() - 190, 10))
         self.player.show_dash_cooldown()
+
+    def initialize_map(self):
+        sheet = SpriteSheet('textures\\tiles\\spritesheet.png')
+        tilemap = TileMap('maps\\test_map.txt', sheet)
+        return tilemap
+
