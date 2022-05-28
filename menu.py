@@ -34,7 +34,6 @@ class Menu:
         self.buttons = self.buttons
 
     def quit(self):
-        self.buttons = self.buttons
         utils.game_running = False
         utils.running = False
         sys.exit()

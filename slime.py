@@ -70,7 +70,8 @@ class Slime:
     def follow_player(self):
         deviation_x = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)
         deviation_y = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)
-        self.angle = math.atan2(self.y - utils.player_y - deviation_y, self.x - utils.player_x - deviation_x)
+        self.angle = math.atan2(self.y + display_scroll[1] - utils.player_y - deviation_y,
+                                self.x + display_scroll[0] - utils.player_x - deviation_x)
 
     def wander(self):
         deviation_x = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)

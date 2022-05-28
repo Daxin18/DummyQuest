@@ -156,10 +156,10 @@ class Game:
             if self.spawn_cd != 0:
                 self.spawn_cd -= 1
             elif keys[pygame.K_p]:
-                self.enemies.append(Slime(random.randint(0 + display_scroll[0], display.get_width() + display_scroll[0]),
-                                          random.randint(0 + display_scroll[1], display.get_height() + display_scroll[1])))
-                self.enemies.append(Guardian(random.randint(0 + display_scroll[0], display.get_width() + display_scroll[0]),
-                                             random.randint(0 + display_scroll[1], display.get_height() + display_scroll[1]),
+                self.enemies.append(Slime(random.randint(0 - display_scroll[0], display.get_width() - display_scroll[0]),
+                                          random.randint(0 - display_scroll[1], display.get_height() - display_scroll[1])))
+                self.enemies.append(Guardian(random.randint(0 - display_scroll[0], display.get_width() - display_scroll[0]),
+                                             random.randint(0 - display_scroll[1], display.get_height() - display_scroll[1]),
                                              self.enemies[0]))
                 self.spawn_cd = settings.spawn_cd
             if self.hit_box_cd != 0:
