@@ -30,7 +30,7 @@ class Dummy:
         self.render()
 
     def render(self):
-        angle = (180 / math.pi) * -math.atan2(player_y - self.y, player_x - self.x)
+        angle = (180 / math.pi) * -math.atan2(player_y - self.y - display_scroll[1], player_x - self.x - display_scroll[0])
         dummy_copy = pygame.transform.rotate(dummy_texture, angle)
         display.blit(dummy_copy,
                      (self.x - dummy_copy.get_width()/2 + display_scroll[0],
