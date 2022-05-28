@@ -4,7 +4,7 @@ import random
 
 import settings
 import utils
-from utils import display, display_scroll, move, collision_table
+from utils import display, display_scroll, move, collision_table, tmapPath
 from slime import Slime
 from guardian import Guardian
 from player import Player
@@ -43,9 +43,9 @@ class Game:
         self.check_for_end()
         self.reset_parameters()
         self.handle_collisions()
-        self.handle_controls()
         self.tmap.draw_map()
         self.render_stuff()
+        self.handle_controls()
         self.render_hud()
         pygame.display.update()
 
@@ -222,6 +222,6 @@ class Game:
 
     def initialize_map(self):
         sheet = SpriteSheet('textures\\tiles\\spritesheet.png')
-        tilemap = TileMap('maps\\test_map.txt', sheet)
+        tilemap = TileMap(tmapPath, sheet)
         return tilemap
 

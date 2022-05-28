@@ -4,6 +4,8 @@ from settings import damage_flick, damage_flick_cooldown, collision_tolerance
 
 pygame.init()
 
+tmapPath = "maps\\map_1.csv"
+
 display = pygame.display.set_mode((1200, 700))
 display_scroll = [0, 0]
 collision_table = [0, 0]    # collision on x, collision on y
@@ -70,13 +72,13 @@ def check_player_collision(solid, player):
         left = player.hit_box.left - solid.hit_box.right
         if abs(top) < collision_tolerance:   # top collision
             collision_table[1] = 1
-            print("top collision")
+            # print("top collision")
         if abs(bottom) < collision_tolerance:  # bottom collision
             collision_table[1] = -1
-            print("bottom collision")
+            # print("bottom collision")
         if abs(right) < collision_tolerance:  # right collision
             collision_table[0] = 1
-            print("right collision")
+            # print("right collision")
         if abs(left) < collision_tolerance:  # left collision
             collision_table[0] = -1
-            print("left collision")
+            # print("left collision")

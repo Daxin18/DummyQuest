@@ -65,12 +65,13 @@ class TileMap:
 
     def read_csv(self, filename):
         tmap = []
-        with open(os.path.join(filename)) as data:
+        with open(os.path.join(filename), encoding="utf-8-sig") as data:
             data = csv.reader(data)
             for row in data:
                 tmap.append(list(row))
         self.map_h = len(tmap)
         self.map_w = len(tmap[0])
+        print(tmap[0][0])
         return tmap
 
     def load_tiles(self, filename):
@@ -80,8 +81,8 @@ class TileMap:
         for row in tmap:
             x = 0
             for tile in row:
-                tiles.append(Tile(self.models[int(tile)], x * self.tile_size - self.map_w,
-                                  y * self.tile_size - self.map_h))
+                tiles.append(Tile(self.models[int(tile)], x * self.tile_size - self.map_w*26,
+                                  y * self.tile_size - self.map_h*28))
                 x += 1
             y += 1
         return tiles
