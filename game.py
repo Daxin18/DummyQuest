@@ -105,6 +105,7 @@ class Game:
         # controls
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
                 sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN and not self.player.running:

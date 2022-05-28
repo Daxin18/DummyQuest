@@ -31,11 +31,12 @@ class Menu:
         utils.game_running = True
 
     def open_settings(self):
-        self.buttons = self.buttons
+        True
 
     def quit(self):
         utils.game_running = False
         utils.running = False
+        pygame.quit()
         sys.exit()
 
     def manage_display(self):
@@ -46,14 +47,14 @@ class Menu:
 
     def handle_clicks(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     for button in self.buttons:
                         button.do_sth()
-                        break
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
 
 class Button:
@@ -66,6 +67,7 @@ class Button:
         self.y = y
         self.width = width
         self.height = height
+        self.text = name
         self.name = utils.font_enemies.render(name, True, (0, 0, 0))
         self.function = function
         self.hit_box = pygame.Rect(x - width/2, y - width/2, width, height)
