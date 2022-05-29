@@ -12,6 +12,8 @@ class Menu:
         self.buttons = []
         self.initialize_buttons()
         self.game = Game()
+        self.death_screen = Death_screen(self.game)
+        self.paused = Pause()
 
     def main(self):
         self.manage_display()
@@ -19,9 +21,9 @@ class Menu:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 400, 400, 80, "Start", self.start_game))
-        self.buttons.append(Button(self, 600, 500, 400, 80, "Settings", self.open_settings))
-        self.buttons.append(Button(self, 600, 600, 400, 80, "Quit", self.quit))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Start", self.start_game))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Settings", self.open_settings))
+        self.buttons.append(Button(self, 600, 700, 400, 80, "Quit", self.quit))
 
     def update_mouse(self):
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
@@ -34,7 +36,8 @@ class Menu:
     def open_settings(self):
         True
 
-    def quit(self):
+    @staticmethod
+    def quit():
         utils.game_running = False
         utils.running = False
         pygame.quit()
@@ -95,3 +98,84 @@ class Button:
     def do_sth(self):
         if self.clicked:
             self.function()
+
+
+class Death_screen:
+    def __init__(self, game):
+        self.game = game
+        self.buttons = []
+        self.initialize_buttons()
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+
+    def main(self):
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+        self.manage_display()
+        self.handle_clicks()
+
+    def initialize_buttons(self):
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Menu", self.go_back))
+        self.buttons.append(Button(self, 600, 700, 400, 80, "Quit", Menu.quit))
+
+    def handle_clicks(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for button in self.buttons:
+                        button.do_sth()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+    def manage_display(self):
+        message = utils.font_death.render("You're dead!", True, (150, 15, 15))
+        display.blit(message, (350, 100))
+        for button in self.buttons:
+            button.render()
+        pygame.display.update()
+
+    def go_back(self):
+        utils.game_running = False
+        utils.dead = False
+
+class Pause:
+    def __init__(self):
+        self.buttons = []
+        self.initialize_buttons()
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+
+    def main(self):
+        pygame.mouse.set_visible(True)
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+        self.manage_display()
+        self.handle_clicks()
+
+    def initialize_buttons(self):
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Resume", self.resume))
+        self.buttons.append(Button(self, 600, 700, 400, 80, "Menu", self.menu))
+
+    def handle_clicks(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for button in self.buttons:
+                        button.do_sth()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+    def manage_display(self):
+        message = utils.font_death.render("Paused", True, (0, 60, 60))
+        display.blit(message, (450, 100))
+        for button in self.buttons:
+            button.render()
+        pygame.display.update()
+
+    def menu(self):
+        utils.game_running = False
+        utils.paused = False
+
+    def resume(self):
+        pygame.mouse.set_visible(False)
+        utils.paused = False

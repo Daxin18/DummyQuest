@@ -11,4 +11,6 @@ if __name__ == '__main__':
         while utils.game_running:
             menu.game.main()
             while utils.dead:
-                print("true")
+                menu.death_screen.main()
+            while utils.paused:
+                menu.paused.main()

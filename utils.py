@@ -20,10 +20,12 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 font_health = pygame.font.Font('freesansbold.ttf', 12)
 font_enemies = pygame.font.Font('freesansbold.ttf', 20)
 font_buttons = pygame.font.Font('dpcomic.ttf', 40)  # or 'prstart.ttf', still can't decide
+font_death = pygame.font.Font('dpcomic.ttf', 120)  # or 'prstart.ttf', still can't decide
 
 game_running = False
 running = True
 dead = False
+paused = False
 
 
 def move(x, y):

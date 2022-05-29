@@ -81,7 +81,7 @@ class Game:
     def check_for_end(self):
         if self.player.hp <= 0:
             pygame.mouse.set_visible(True)
-            utils.game_running = False
+            utils.dead = True
         utils.check_for_player_kill_zone(self)
         for enemy in self.enemies:
             utils.check_kill_zone(self, enemy)
@@ -167,12 +167,16 @@ class Game:
         if keys[pygame.K_d]:
             if collision_table[0] <= 0:
                 move(-self.environment_speed, 0)
+
+        # utilities
         if keys[pygame.K_LCTRL]:
             display.blit(utils.font_health.render("HP: " + str(self.player.hp), True, (255, 255, 255)),
                          (self.player.x, self.player.y + self.player.height / 2))
             for enemy in self.enemies:
                 display.blit(utils.font_health.render("HP: " + str(enemy.hp), True, (255, 255, 255)),
                              (enemy.x + display_scroll[0], enemy.y + 7*enemy.height/16 + display_scroll[1]))
+        if keys[pygame.K_ESCAPE]:
+            utils.paused = True
 
         # developer keys
         if settings.dev_keys:
@@ -235,6 +239,8 @@ class Game:
                                                     self.mouse_y + settings.crosshair_size + 5, 3, 4))
 
         display.blit(utils.font.render("SCORE: " + str(self.SCORE), True, (0, 0, 255)), (display.get_width() / 2 - 70, 20))
+        display.blit(utils.font.render("TIME: " + str(int(self.time/3600)) + "min " + str(int(self.time/60)) + "s", True, (0, 0, 255)),
+                     (10, 20))
         display.blit(utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),
                      (display.get_width() - 190, 10))
         self.player.show_dash_cooldown()
