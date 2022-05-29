@@ -3,7 +3,6 @@ import csv
 import os
 import json
 
-import utils
 from utils import display, display_scroll
 
 tilenames = ['base.png', 'grass.png', 'flower1.png', 'flower2.png', 'road_corner_SE.png',
@@ -71,7 +70,6 @@ class TileMap:
                 tmap.append(list(row))
         self.map_h = len(tmap)
         self.map_w = len(tmap[0])
-        print(tmap[0][0])
         return tmap
 
     def load_tiles(self, filename):

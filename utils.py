@@ -82,3 +82,15 @@ def check_player_collision(solid, player):
         if abs(left) < collision_tolerance:  # left collision
             collision_table[0] = -1
             # print("left collision")
+
+def set_game_parameters():
+    display_scroll[0] = 0
+    display_scroll[1] = 0
+    collision_table[0] = 0
+    collision_table[1] = 0
+    player_bullets.clear()
+    enemy_bullets.clear()
+    enemies.clear()
+    solids.clear()
+    assets.clear()
+

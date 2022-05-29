@@ -64,7 +64,7 @@ class Slime:
 
     def player_in_range(self):
         return math.sqrt((self.x + display_scroll[0] - utils.player_x) ** 2 +
-                         (self.y + display_scroll[0] - utils.player_y) ** 2)\
+                         (self.y + display_scroll[1] - utils.player_y) ** 2)\
                <= settings.slime_sight_range
 
     def follow_player(self):
@@ -76,7 +76,8 @@ class Slime:
     def wander(self):
         deviation_x = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)
         deviation_y = random.randint(-settings.slime_min_wandering_range, settings.slime_max_wandering_range)
-        self.angle = math.atan2(self.y + deviation_y, self.x + deviation_x)
+        self.angle = math.atan2(self.y + display_scroll[1] + deviation_y - self.y - display_scroll[1],
+                                self.x + display_scroll[0] + deviation_x - self.x - display_scroll[0])
 
     def attack(self, enemy_bullets):
         if self.attack_cooldown == 0 and self.player_in_range():

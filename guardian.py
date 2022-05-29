@@ -90,7 +90,8 @@ class Guardian:
                                     self.y - self.height/2 + display_scroll[1]))
 
     def player_in_range(self):
-        return math.sqrt((self.x - utils.player_x) ** 2 + (self.y - utils.player_y) ** 2)\
+        return math.sqrt((self.x + display_scroll[0] - utils.player_x) ** 2 +
+                         (self.y + display_scroll[1] - utils.player_y) ** 2)\
                <= settings.guardian_sight_range
 
     def attack(self, enemy_bullets):

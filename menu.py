@@ -27,6 +27,7 @@ class Menu:
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
 
     def start_game(self):
+        pygame.mouse.set_visible(False)
         self.game = Game()
         utils.game_running = True
 

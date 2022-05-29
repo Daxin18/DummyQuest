@@ -16,13 +16,14 @@ from map import TileMap, SpriteSheet
 
 class Game:
     def __init__(self):
-        #pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
+        utils.set_game_parameters()
 
         self.player_bullets = []
         self.enemies = []
         self.enemy_bullets = []
         self.solids = []  # aka things you can collide with
         self.assets = []
+        self.time = 0
 
         self.player = Player(utils.player_x, utils.player_y, 32, 32)
         self.dummy = Dummy(600, 300, 40, 40)
@@ -39,7 +40,9 @@ class Game:
         self.generate_random_terrain()
         self.tmap = self.initialize_map()
 
+
     def main(self):
+        self.time += 1
         self.check_for_end()
         self.reset_parameters()
         self.handle_collisions()
@@ -70,6 +73,7 @@ class Game:
 
     def check_for_end(self):
         if self.player.hp <= 0:
+            pygame.mouse.set_visible(True)
             utils.game_running = False
 
     def reset_parameters(self):
@@ -172,6 +176,11 @@ class Game:
                 self.hit_box_cd = 20
 
     def render_stuff(self):
+        for solid in self.solids:
+            solid.render_solid()
+        # assets
+        for asset in self.assets:
+            asset.render_asset()
         self.player.main(self.mouse_x, self.mouse_y)
         for enemy in self.enemies:
             enemy.main()
@@ -191,11 +200,6 @@ class Game:
                 bullet.main()
             else:
                 self.enemy_bullets.remove(bullet)
-        for solid in self.solids:
-            solid.render_solid()
-        # assets
-        for asset in self.assets:
-            asset.render_asset()
 
     def render_hud(self):
         pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y + settings.crosshair_size + 5, 2, 5))

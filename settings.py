@@ -28,7 +28,7 @@ slime_speed = 2
 slime_size = 15
 slime_min_wandering_range = 50
 slime_max_wandering_range = 100
-slime_wander_off_probability = 20   # slime has 1/[slime_wander_off_probability] to wander off
+slime_wander_off_probability = 40   # slime has 1/[slime_wander_off_probability] to wander off
 slime_behaviour_change = 60
 slime_attack_cooldown = 180
 slime_bullet_speed = 6
@@ -38,7 +38,7 @@ slime_death_bullet_TTL = 180
 slime_bullet_dmg = 1
 slime_death_bullet_dmg = 3
 slime_hp = 30
-slime_sight_range = 450
+slime_sight_range = 600
 spawn_cd = 10
 
 guardian_width = 30
