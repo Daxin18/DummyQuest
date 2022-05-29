@@ -19,9 +19,9 @@ class Menu:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 300, 500, 200, 40, "Start", self.start_game))
-        self.buttons.append(Button(self, 300, 550, 200, 40, "Settings", self.open_settings))
-        self.buttons.append(Button(self, 300, 600, 200, 40, "Quit", self.quit))
+        self.buttons.append(Button(self, 600, 400, 400, 80, "Start", self.start_game))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Settings", self.open_settings))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Quit", self.quit))
 
     def update_mouse(self):
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
@@ -69,7 +69,7 @@ class Button:
         self.width = width
         self.height = height
         self.text = name
-        self.name = utils.font_enemies.render(name, True, (0, 0, 0))
+        self.name = utils.font_buttons.render(name, True, (0, 0, 0))
         self.function = function
         self.hit_box = pygame.Rect(x - width/2, y - width/2, width, height)
         self.clicked = False
@@ -78,7 +78,8 @@ class Button:
     def render(self):
         self.choose_texture()
         pygame.draw.rect(display, (255, 0, 0), self.hit_box)
-        display.blit(self.texture, (self.x - self.width/2, self.y - self.height * 2.5))
+        texture_copy = pygame.transform.scale(self.texture, (self.width, self.height))
+        display.blit(texture_copy, (self.x - self.width/2, self.y - self.height * 2.5))
         display.blit(self.name,
                      (self.x - self.name.get_width()/2, self.y - self.height * 2.25))
 

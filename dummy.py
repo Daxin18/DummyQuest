@@ -20,6 +20,7 @@ class Dummy:
         self.damage_flick_dir = 0
         self.hp = 10000
         self.protected = False
+        self.movement_blockade = [0, 0]
 
     def main(self):
         handle_damage(self)
@@ -36,14 +37,15 @@ class Dummy:
                      (self.x - dummy_copy.get_width()/2 + display_scroll[0],
                       self.y - dummy_copy.get_height()/2 + display_scroll[1]))
 
-    def attack(self, enemy_bullets):
+    def attack(self, game):
         self.hp = self.hp
         # print(enemy_bullets)
         # print("Dummy attacked!")
 
-    def die(self, enemy_bullets):
+    def die(self, game):
         self.hp = self.hp
         print("Dummy died!")
+        game.enemies.remove(self)
 
     def damage(self, damage):
         if not self.protected:

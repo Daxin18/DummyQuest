@@ -12,11 +12,13 @@ from dummy import Dummy
 from rock import Rock
 from tree import Tree
 from map import TileMap, SpriteSheet
+from spawner import Spawner
 
 
 class Game:
     def __init__(self):
         utils.set_game_parameters()
+        utils.dead = False
 
         self.player_bullets = []
         self.enemies = []
@@ -39,7 +41,7 @@ class Game:
 
         self.generate_random_terrain()
         self.tmap = self.initialize_map()
-
+        self.generate_spawners()
 
     def main(self):
         self.time += 1
@@ -51,6 +53,11 @@ class Game:
         self.handle_controls()
         self.render_hud()
         pygame.display.update()
+
+    def generate_spawners(self):
+        spawn = Spawner(-1000, 1000, 192, 256, self)
+        self.enemies.append(spawn)
+        self.solids.append(spawn)
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
@@ -80,9 +87,13 @@ class Game:
             utils.check_kill_zone(self, enemy)
 
     def reset_parameters(self):
-        display.fill((105, 105, 105))
+        # display.fill((105, 105, 105))
+        display.fill((150, 15, 15))
         collision_table[0] = 0
         collision_table[1] = 0
+        for enemy in self.enemies:
+            enemy.movement_blockade[0] = 0
+            enemy.movement_blockade[1] = 0
 
         utils.clock.tick(60)
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
@@ -109,6 +120,8 @@ class Game:
 
         for solid in self.solids:
             utils.check_player_collision(solid, self.player)
+            for enemy in self.enemies:
+                utils.check_entity_collision(solid, enemy)
 
     def handle_controls(self):
         # controls
@@ -159,7 +172,7 @@ class Game:
                          (self.player.x, self.player.y + self.player.height / 2))
             for enemy in self.enemies:
                 display.blit(utils.font_health.render("HP: " + str(enemy.hp), True, (255, 255, 255)),
-                             (enemy.x + display_scroll[0], enemy.y + enemy.size + display_scroll[1]))
+                             (enemy.x + display_scroll[0], enemy.y + 7*enemy.height/16 + display_scroll[1]))
 
         # developer keys
         if settings.dev_keys:
@@ -187,10 +200,9 @@ class Game:
         self.player.main(self.mouse_x, self.mouse_y)
         for enemy in self.enemies:
             enemy.main()
-            enemy.attack(self.enemy_bullets)
+            enemy.attack(self)
             if enemy.hp <= 0:
-                self.enemies.remove(enemy)
-                enemy.die(self.enemy_bullets)
+                enemy.die(self)
                 self.SCORE += 1
         # bullets
         for bullet in self.player_bullets:

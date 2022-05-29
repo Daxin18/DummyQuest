@@ -26,8 +26,7 @@ shotgun_pellet_speed = 10
 shotgun_spread = 6  # the higher the value, the more accurate the shotgun is
 slime_speed = 2
 slime_size = 15
-slime_min_wandering_range = 50
-slime_max_wandering_range = 100
+slime_wandering_range = 100
 slime_wander_off_probability = 40   # slime has 1/[slime_wander_off_probability] to wander off
 slime_behaviour_change = 60
 slime_attack_cooldown = 180
@@ -66,3 +65,16 @@ rock_number = 25
 
 tmap_x_offset = 26
 tmap_y_offset = 28
+
+spawner_width = 30
+spawner_height = 80
+spawner_hp = 1000
+spawner_spawn_cd = 600
+spawner_enraged_spawn_cd = 180
+spawner_spawn_amount = 3
+spawner_death_spawn_amount = 8
+spawner_enrage_hp_ratio = 0.5
+spawner_spawn_distance = 200  # not really a distance but whatever
+spawner_spawn_deviation = 150
+spawner_guardians = 3
+spawner_sight_range = 1000

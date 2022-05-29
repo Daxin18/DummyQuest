@@ -22,11 +22,11 @@ class Guardian:
     def __init__(self, x, y, guarding):
         self.width = settings.guardian_width
         self.height = settings.guardian_height
-        self.size = self.height/2
+        self.size = self.height / 2
         self.guarding = guarding
         self.x = x
         self.y = y
-        self.hit_box = pygame.Rect(self.x - self.width/2, self.y - self.height/2, self.width, self.height)
+        self.hit_box = pygame.Rect(self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
         self.damage_flick_cooldown = 0
         self.damaged = False
         self.damage_flick_dir = 0
@@ -39,6 +39,8 @@ class Guardian:
         self.texture = pygame.image.load("textures\\drawing.png")
         self.guarding.protected = True
         self.animation_counter = 0
+        self.attacked = False
+        self.movement_blockade = [0, 0]
 
     def main(self):
         handle_damage(self)
@@ -57,8 +59,14 @@ class Guardian:
             self.texture = buried[bur]
             if self.behaviour_change_timer != 0:
                 self.behaviour_change_timer -= 1
-                self.x -= self.vel_x
-                self.y -= self.vel_y
+                if self.movement_blockade[0] == 0:
+                    self.x -= self.vel_x
+                else:
+                    self.x += self.vel_x
+                if self.movement_blockade[1] == 0:
+                    self.y -= self.vel_y
+                else:
+                    self.y += self.vel_y
             else:
                 self.buried = False
                 self.behaviour_change_timer = settings.guardian_idle_time
@@ -73,6 +81,7 @@ class Guardian:
                 self.behaviour_change_timer -= 1
             else:
                 self.buried = True
+                self.attacked = False
                 self.behaviour_change_timer = settings.guardian_buried_time
                 deviation_x = random.randint(-settings.guardian_min_deviation_range,
                                              settings.guardian_max_deviation_range)
@@ -82,28 +91,30 @@ class Guardian:
                 self.vel_x = math.cos(angle) * self.speed
                 self.vel_y = math.sin(angle) * self.speed
 
-        self.hit_box = pygame.Rect(self.x - self.width/2 + display_scroll[0],
-                                   self.y - self.height/2 + display_scroll[1], self.width, self.height)
-        display.blit(shield, (self.guarding.x - self.guarding.size + display_scroll[0],
-                              self.guarding.y + 5 + display_scroll[1]))
-        display.blit(self.texture, (self.x - self.width/2 + display_scroll[0],
-                                    self.y - self.height/2 + display_scroll[1]))
+        self.hit_box = pygame.Rect(self.x - self.width / 2 + display_scroll[0],
+                                   self.y - self.height / 2 + display_scroll[1], self.width, self.height)
+        display.blit(shield, (self.guarding.x - self.guarding.width / 2 + display_scroll[0],
+                              self.guarding.y + self.guarding.height / 4 + display_scroll[1]))
+        display.blit(self.texture, (self.x - self.width / 2 + display_scroll[0],
+                                    self.y - self.height / 2 + display_scroll[1]))
 
     def player_in_range(self):
         return math.sqrt((self.x + display_scroll[0] - utils.player_x) ** 2 +
-                         (self.y + display_scroll[1] - utils.player_y) ** 2)\
+                         (self.y + display_scroll[1] - utils.player_y) ** 2) \
                <= settings.guardian_sight_range
 
-    def attack(self, enemy_bullets):
-        timer = settings.guardian_attack_cast_time + self.behaviour_change_timer == settings.guardian_idle_time
-        if not self.buried and timer and self.player_in_range():
-            enemy_bullets.append(Bullet(self.x, self.y - self.height/2 + 10,
-                                        player_x - display_scroll[0], player_y - display_scroll[1],
-                                        settings.guardian_bullet_size, settings.guardian_bullet_TTL,
-                                        settings.guardian_bullet_damage, settings.guardian_bullet_speed, bullet))
+    def attack(self, game):
+        timer = settings.guardian_idle_time - self.behaviour_change_timer >= settings.guardian_attack_cast_time
+        if not self.buried and timer and self.player_in_range() and not self.attacked:
+            game.enemy_bullets.append(Bullet(self.x, self.y - self.height / 2 + 10,
+                                             player_x - display_scroll[0], player_y - display_scroll[1],
+                                             settings.guardian_bullet_size, settings.guardian_bullet_TTL,
+                                             settings.guardian_bullet_damage, settings.guardian_bullet_speed, bullet))
+            self.attacked = True
 
-    def die(self, enemy_bullets):
+    def die(self, game):
         self.guarding.protected = False
+        game.enemies.remove(self)
 
     def damage(self, damage):
         if not self.buried:
