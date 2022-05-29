@@ -3,6 +3,7 @@ import csv
 import os
 import json
 
+import settings
 from utils import display, display_scroll
 
 tilenames = ['base.png', 'grass.png', 'flower1.png', 'flower2.png', 'road_corner_SE.png',
@@ -50,9 +51,9 @@ class TileMap:
         self.models = []
         self.spritesheet = spritesheet
         self.fill_models()
-        self.tiles = self.load_tiles(filename)
         self.map_w = 0
         self.map_h = 0
+        self.tiles = self.load_tiles(filename)
 
     def draw_map(self):
         for tile in self.tiles:
@@ -79,8 +80,8 @@ class TileMap:
         for row in tmap:
             x = 0
             for tile in row:
-                tiles.append(Tile(self.models[int(tile)], x * self.tile_size - self.map_w*26,
-                                  y * self.tile_size - self.map_h*28))
+                tiles.append(Tile(self.models[int(tile)], x * self.tile_size - self.map_w*settings.tmap_x_offset,
+                                  y * self.tile_size - self.map_h*settings.tmap_y_offset))
                 x += 1
             y += 1
         return tiles

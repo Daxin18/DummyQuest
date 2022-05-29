@@ -75,6 +75,9 @@ class Game:
         if self.player.hp <= 0:
             pygame.mouse.set_visible(True)
             utils.game_running = False
+        utils.check_for_player_kill_zone(self)
+        for enemy in self.enemies:
+            utils.check_kill_zone(self, enemy)
 
     def reset_parameters(self):
         display.fill((105, 105, 105))

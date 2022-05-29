@@ -63,3 +63,6 @@ collision_tolerance = dash_speed + sprinting_boost + walking_speed + 10
 
 tree_number = 40
 rock_number = 25
+
+tmap_x_offset = 26
+tmap_y_offset = 28

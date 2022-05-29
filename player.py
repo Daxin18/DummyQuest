@@ -158,3 +158,6 @@ class Player:
         if not self.dashing:
             give_damage(self, damage)
         return not self.dashing
+
+    def die(self, enemy_bullets):
+        self.hp = 0

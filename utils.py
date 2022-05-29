@@ -1,5 +1,7 @@
 import pygame
 import random
+
+import settings
 from settings import damage_flick, damage_flick_cooldown, collision_tolerance
 
 pygame.init()
@@ -12,12 +14,6 @@ collision_table = [0, 0]    # collision on x, collision on y
 
 player_x = display.get_width()/2
 player_y = display.get_height()/2
-
-player_bullets = []
-enemies = []
-enemy_bullets = []
-solids = []  # aka things you can collide with
-assets = []
 
 clock = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 32)
@@ -83,14 +79,27 @@ def check_player_collision(solid, player):
             collision_table[0] = -1
             # print("left collision")
 
+
+def check_kill_zone(game, enemy):
+    if enemy.y < -game.tmap.map_h*settings.tmap_y_offset\
+       or enemy.y > game.tmap.map_h * game.tmap.tile_size - game.tmap.map_h*settings.tmap_y_offset\
+       or enemy.x < -game.tmap.map_w*settings.tmap_x_offset\
+       or enemy.x > game.tmap.map_w * game.tmap.tile_size - game.tmap.map_w*settings.tmap_x_offset:
+        game.enemies.remove(enemy)
+        enemy.die(game.enemy_bullets)
+
+
+def check_for_player_kill_zone(game):
+    if display_scroll[1] < -game.tmap.map_h * settings.tmap_y_offset - player_y - 100\
+       or display_scroll[1] > game.tmap.map_h * game.tmap.tile_size - game.tmap.map_h * settings.tmap_y_offset - player_y - 100\
+       or display_scroll[0] < -game.tmap.map_w * settings.tmap_x_offset - player_x\
+       or display_scroll[0] > game.tmap.map_w * game.tmap.tile_size - game.tmap.map_w * settings.tmap_x_offset - player_x:
+        game.player.die(game.enemy_bullets)
+
+
 def set_game_parameters():
     display_scroll[0] = 0
     display_scroll[1] = 0
     collision_table[0] = 0
     collision_table[1] = 0
-    player_bullets.clear()
-    enemy_bullets.clear()
-    enemies.clear()
-    solids.clear()
-    assets.clear()
 
