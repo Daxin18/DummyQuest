@@ -6,6 +6,7 @@ import settings
 from utils import display, player_y, player_x, handle_damage, give_damage, display_scroll
 from slime import Slime
 from guardian import Guardian
+from item import Item
 
 spawner_texture = pygame.image.load("textures\\Spawner.xcf")
 
@@ -67,6 +68,10 @@ class Spawner:
     def die(self, game):
         self.spawn_slimes(game, settings.spawner_death_spawn_amount)
         game.enemies.remove(self)
+        game.solids.remove(self)
+        game.items.append(Item(self.x, self.y, Item.health_potion, Item.item_textures[0]))
+        game.items.append(Item(self.x, self.y, Item.base_damage_boost, Item.item_textures[1]))
+        game.items.append(Item(self.x, self.y, Item.shotgun_damage_boost, Item.item_textures[2]))
 
     def damage(self, damage):
         if not self.protected:

@@ -19,6 +19,8 @@ from item import Item
 class Game:
     def __init__(self):
         utils.set_game_parameters()
+        utils.paused = False
+        utils.win = False
         utils.dead = False
 
         self.player_bullets = []
@@ -72,6 +74,7 @@ class Game:
         self.items.append(Item(800, 300, Item.health_potion, Item.item_textures[0]))
         self.items.append(Item(1000, 300, Item.base_damage_boost, Item.item_textures[1]))
         self.items.append(Item(1200, 300, Item.shotgun_damage_boost, Item.item_textures[2]))
+        self.items.append(Item(1000, 0, Item.game_won, Item.item_textures[3]))
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
@@ -94,7 +97,6 @@ class Game:
 
     def check_for_end(self):
         if self.player.hp <= 0:
-            pygame.mouse.set_visible(True)
             utils.dead = True
         utils.check_for_player_kill_zone(self)
         for enemy in self.enemies:
@@ -125,7 +127,7 @@ class Game:
                         self.enemy_bullets.remove(bullet)
                 except ValueError:
                     0
-            self.check_bullet_to_solid(bullet)
+            self.check_enemy_bullet_to_solid(bullet)
 
         for solid in self.solids:
             utils.check_player_collision(solid, self.player)
@@ -282,6 +284,16 @@ class Game:
                 try:
                     if bullet.damage(solid):
                         self.player_bullets.remove(bullet)
+                        break
+                except ValueError:
+                    0
+
+    def check_enemy_bullet_to_solid(self, bullet):
+        for solid in self.solids:
+            if bullet.hit_box.colliderect(solid.hit_box) and not self.enemies.__contains__(solid):
+                try:
+                    if bullet.damage(solid):
+                        self.enemy_bullets.remove(bullet)
                         break
                 except ValueError:
                     0

@@ -14,3 +14,5 @@ if __name__ == '__main__':
                 menu.death_screen.main()
             while utils.paused:
                 menu.paused.main()
+            while utils.win:
+                menu.win.main()

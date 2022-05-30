@@ -27,6 +27,7 @@ game_running = False
 running = True
 dead = False
 paused = False
+win = False
 
 
 def move(x, y):
