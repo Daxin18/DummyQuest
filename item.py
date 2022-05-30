@@ -6,7 +6,8 @@ from utils import display, display_scroll, player_x, player_y, font_items
 
 
 class Item:
-    item_textures = [pygame.image.load("textures\\pizza.xcf"), pygame.image.load("textures\\pizza.png")]
+    item_textures = [pygame.image.load("textures\\pizza.xcf"), pygame.image.load("textures\\bullet_boost.xcf"),
+                     pygame.image.load("textures\\shotgun_boost.xcf")]
 
     def __init__(self, x, y, function, texture):
         self.x = x
@@ -49,7 +50,11 @@ class Item:
         game.player.hp += settings.health_potion_heal
 
     @staticmethod
-    def damage_boost(game):
-        game.player.bonus_damage += 1
+    def base_damage_boost(game):
+        game.player.base_bonus_damage += 1
+
+    @staticmethod
+    def shotgun_damage_boost(game):
+        game.player.shotgun_bonus_damage += 1
 
 

@@ -37,7 +37,8 @@ class Player:
         self.dash_trail_copy = dash_trail
         self.dash_offset_x = 96
         self.dash_offset_y = 96
-        self.bonus_damage = 0
+        self.base_bonus_damage = 0
+        self.shotgun_bonus_damage = 0
 
     def main(self, mouse_x, mouse_y):
         if self.dash_cooldown != 0:
@@ -137,7 +138,7 @@ class Player:
 
     def primary_fire(self, mouse_x, mouse_y, player_bullets):
         player_bullets.append(Bullet(self.x, self.y, mouse_x, mouse_y, settings.bullet_size,
-                                     settings.bullet_TTL, settings.base_bullet_damage + self.bonus_damage,
+                                     settings.bullet_TTL, settings.base_bullet_damage + self.base_bonus_damage,
                                      settings.bullet_speed, player_bullet_texture, True))
         self.shooting_penalty = settings.shooting_penalty_time
 
@@ -149,7 +150,7 @@ class Player:
                 mouse_x_1 = mouse_x + random.randint(-spread, spread)
                 mouse_y_1 = mouse_y + random.randint(-spread, spread)
                 player_bullets.append(Bullet(self.x, self.y, mouse_x_1, mouse_y_1, settings.shotgun_pellet_size,
-                                             settings.bullet_TTL, settings.shotgun_pellet_damage + self.bonus_damage,
+                                             settings.bullet_TTL, settings.shotgun_pellet_damage + self.shotgun_bonus_damage,
                                              settings.shotgun_pellet_speed, player_bullet_texture, True))
                 i += 1
             self.shotgun_cooldown = settings.shotgun_cooldown

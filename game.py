@@ -64,7 +64,14 @@ class Game:
 
     def generate_items(self):
         self.items.append(Item(800, 100, Item.health_potion, Item.item_textures[0]))
-        self.items.append(Item(1000, 100, Item.damage_boost, Item.item_textures[1]))
+        self.items.append(Item(1000, 100, Item.base_damage_boost, Item.item_textures[1]))
+        self.items.append(Item(1200, 100, Item.shotgun_damage_boost, Item.item_textures[2]))
+        self.items.append(Item(800, 200, Item.health_potion, Item.item_textures[0]))
+        self.items.append(Item(1000, 200, Item.base_damage_boost, Item.item_textures[1]))
+        self.items.append(Item(1200, 200, Item.shotgun_damage_boost, Item.item_textures[2]))
+        self.items.append(Item(800, 300, Item.health_potion, Item.item_textures[0]))
+        self.items.append(Item(1000, 300, Item.base_damage_boost, Item.item_textures[1]))
+        self.items.append(Item(1200, 300, Item.shotgun_damage_boost, Item.item_textures[2]))
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
@@ -271,9 +278,9 @@ class Game:
 
     def check_bullet_to_solid(self, bullet):
         for solid in self.solids:
-            if bullet.hit_box.colliderect(solid.hit_box):
+            if bullet.hit_box.colliderect(solid.hit_box) and not self.enemies.__contains__(solid):
                 try:
-                    if bullet.damage(solid) and not self.enemies.__contains__(solid):
+                    if bullet.damage(solid):
                         self.player_bullets.remove(bullet)
                         break
                 except ValueError:
