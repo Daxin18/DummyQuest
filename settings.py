@@ -1,6 +1,7 @@
 import pygame
 
 player_hp = 100
+player_health_cap = 1000   # maximum health you can have
 walking_speed = 3
 sprinting_boost = 3
 shooting_penalty = 1
@@ -25,10 +26,13 @@ shotgun_pellet_damage = 1
 shotgun_pellet_size = 2
 shotgun_pellet_speed = 10
 shotgun_spread = 6  # the higher the value, the more accurate the shotgun is
+base_bonus_damage = 0
+base_bonus_shotgun_damage = 0
+
 slime_speed = 2
 slime_size = 15
 slime_wandering_range = 100
-slime_wander_off_probability = 20   # slime has 1/[slime_wander_off_probability] to wander off
+slime_wander_off_probability = 20   # slime has 1/[slime_wander_off_probability] chance to wander off
 slime_behaviour_change = 60
 slime_attack_cooldown = 180
 slime_bullet_speed = 6
@@ -51,10 +55,10 @@ guardian_min_deviation_range = 50
 guardian_max_deviation_range = 100
 guardian_sight_range = 800
 guardian_hp = 150
-guardian_bullet_damage = 15
 guardian_bullet_speed = 20
 guardian_bullet_size = 15
 guardian_bullet_TTL = 120
+guardian_bullet_damage = 15
 
 enable_hit_boxes = False
 enable_bullet_hit_boxes = False
@@ -67,8 +71,8 @@ rock_number = 25
 tmap_x_offset = 26
 tmap_y_offset = 28
 
-spawner_width = 30
-spawner_height = 80
+spawner_width = 256
+spawner_height = 192
 spawner_hp = 1000
 spawner_spawn_cd = 600
 spawner_enraged_spawn_cd = 180
@@ -77,12 +81,16 @@ spawner_death_spawn_amount = 8
 spawner_enrage_hp_ratio = 0.5
 spawner_spawn_distance = 200  # not really a distance but whatever
 spawner_spawn_deviation = 150
-spawner_guardians = 3
-spawner_sight_range = 1000
+spawner_sight_range = 1200
+spawner_amount = 4
 
 item_hover_time = 60
 item_hover_amount = 0.25
 health_potion_heal = 25
 item_pickup_radius = 100
 
+spawner_coordinates = [[-1150, 3150], [3400, -2500], [3200, 3300], [-2300, -2200]]
+
 pickup_key = pygame.K_e
+
+difficulty_level = 1

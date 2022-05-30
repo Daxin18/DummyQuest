@@ -21,13 +21,14 @@ font_health = pygame.font.Font('freesansbold.ttf', 12)
 font_enemies = pygame.font.Font('freesansbold.ttf', 20)
 font_buttons = pygame.font.Font('dpcomic.ttf', 40)  # or 'prstart.ttf', still can't decide
 font_death = pygame.font.Font('dpcomic.ttf', 120)  # or 'prstart.ttf', still can't decide
-font_items = pygame.font.Font('freesansbold.ttf', 12)
+font_items = pygame.font.Font('freesansbold.ttf', 14)
 
-game_running = False
 running = True
+game_running = False
 dead = False
 paused = False
 win = False
+open_settings = False
 
 
 def move(x, y):
@@ -126,4 +127,38 @@ def set_game_parameters():
     display_scroll[1] = 0
     collision_table[0] = 0
     collision_table[1] = 0
+
+
+def set_difficulty():
+    if settings.difficulty_level == -1:  # baby
+        settings.spawner_amount = 2
+        settings.player_hp = 150
+        settings.guardian_bullet_damage = 10
+        settings.spawner_enrage_hp_ratio = 0.2
+        settings.base_bonus_damage = 2
+        settings.base_bonus_shotgun_damage = 2
+
+    elif settings.difficulty_level == 0:  # easy
+        settings.spawner_amount = 3
+        settings.player_hp = 120
+        settings.guardian_bullet_damage = 15
+        settings.spawner_enrage_hp_ratio = 0.35
+        settings.base_bonus_damage = 1
+        settings.base_bonus_shotgun_damage = 1
+
+    elif settings.difficulty_level == 1:  # normal
+        settings.spawner_amount = 4
+        settings.player_hp = 100
+        settings.guardian_bullet_damage = 15
+        settings.spawner_enrage_hp_ratio = 0.45
+        settings.base_bonus_damage = 0
+        settings.base_bonus_shotgun_damage = 0
+
+    elif settings.difficulty_level == 2:  # hard
+        settings.spawner_amount = 4
+        settings.player_hp = 90
+        settings.guardian_bullet_damage = 20
+        settings.spawner_enrage_hp_ratio = 0.6
+        settings.base_bonus_damage = 0
+        settings.base_bonus_shotgun_damage = 0
 

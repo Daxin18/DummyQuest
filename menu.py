@@ -2,6 +2,7 @@ import pygame
 import sys
 
 import utils
+import settings
 from utils import display
 from game import Game
 
@@ -15,6 +16,7 @@ class Menu:
         self.death_screen = Death_screen(self.game)
         self.paused = Pause()
         self.win = Win_screen(self.game)
+        self.settings = Settings()
 
     def main(self):
         self.manage_display()
@@ -35,7 +37,7 @@ class Menu:
         utils.game_running = True
 
     def open_settings(self):
-        True
+        utils.open_settings = True
 
     @staticmethod
     def quit():
@@ -207,12 +209,11 @@ class Win_screen:
                         button.do_sth()
 
             if event.type == pygame.QUIT:
-                pygame.quit()
                 sys.exit()
 
     def manage_display(self):
-        message = utils.font_death.render("You won!", True, (138, 238, 255))
-        display.blit(message, (400, 100))
+        message = utils.font_death.render("You've won!", True, (138, 238, 255))
+        display.blit(message, (330, 100))
         for button in self.buttons:
             button.render()
         pygame.display.update()
@@ -220,3 +221,72 @@ class Win_screen:
     def go_back(self):
         utils.game_running = False
         utils.win = False
+
+class Settings:
+    def __init__(self):
+        self.buttons = []
+        self.initialize_buttons()
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+
+    def main(self):
+        pygame.mouse.set_visible(True)
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+        self.manage_display()
+        self.handle_clicks()
+
+    def initialize_buttons(self):
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Difficulty level", Settings.toggle_difficulty))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Crosshair dot", Settings.toggle_crosshair))
+        self.buttons.append(Button(self, 600, 700, 400, 80, "<-- Back", Settings.go_back))
+
+    def handle_clicks(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for button in self.buttons:
+                        button.do_sth()
+
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+    def manage_display(self):
+        display.fill((39, 142, 183))
+        message = utils.font_death.render("Settings", True, (156, 183, 50))
+        display.blit(message, (430, 100))
+        for button in self.buttons:
+            button.render()
+        Settings.manage_settings()
+        pygame.display.update()
+
+    @staticmethod
+    def go_back():
+        utils.open_settings = False
+        utils.set_difficulty()
+
+    @staticmethod
+    def toggle_crosshair():
+        settings.crosshair_dot = not settings.crosshair_dot
+
+    @staticmethod
+    def toggle_difficulty():
+        settings.difficulty_level += 1
+        if settings.difficulty_level > 2:
+            settings.difficulty_level = -1
+        utils.set_difficulty()
+
+    @staticmethod
+    def manage_settings():
+        if settings.crosshair_dot:
+            display.blit(utils.font_buttons.render("ON", True, (0, 255, 0)), (820, 420))
+        else:
+            display.blit(utils.font_buttons.render("OFF", True, (255, 0, 0)), (820, 420))
+
+        if settings.difficulty_level == -1:
+            display.blit(utils.font_buttons.render("BABY", True, (0, 255, 0)), (820, 320))
+        elif settings.difficulty_level == 0:
+            display.blit(utils.font_buttons.render("EASY", True, (200, 255, 28)), (820, 320))
+        elif settings.difficulty_level == 1:
+            display.blit(utils.font_buttons.render("NORMAL", True, (249, 200, 30)), (820, 320))
+        else:
+            display.blit(utils.font_buttons.render("HARD", True, (255, 0, 0)), (820, 320))
+

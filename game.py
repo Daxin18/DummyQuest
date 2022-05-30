@@ -58,11 +58,14 @@ class Game:
         self.handle_controls()
         self.render_hud()
         pygame.display.update()
+        # print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
 
     def generate_spawners(self):
-        spawn = Spawner(-1000, 1000, 192, 256, self)
-        self.enemies.append(spawn)
-        self.solids.append(spawn)
+        for i in range(0, settings.spawner_amount):
+            spawn = Spawner(settings.spawner_coordinates[i][0], settings.spawner_coordinates[i][1],
+                            settings.spawner_height, settings.spawner_width, self)
+            self.enemies.append(spawn)
+            self.solids.append(spawn)
 
     def generate_items(self):
         self.items.append(Item(800, 100, Item.health_potion, Item.item_textures[0]))

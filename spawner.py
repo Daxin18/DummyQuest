@@ -51,7 +51,6 @@ class Spawner:
 
     def attack(self, game):
         if self.attack_cd == 0 and self.player_in_range():
-            print("spawned slimes")
             self.spawn_slimes(game, settings.spawner_spawn_amount)
             if self.enraged:
                 self.attack_cd = settings.spawner_enraged_spawn_cd
@@ -69,9 +68,9 @@ class Spawner:
         self.spawn_slimes(game, settings.spawner_death_spawn_amount)
         game.enemies.remove(self)
         game.solids.remove(self)
-        game.items.append(Item(self.x, self.y, Item.health_potion, Item.item_textures[0]))
+        game.items.append(Item(self.x - 50, self.y, Item.health_potion, Item.item_textures[0]))
         game.items.append(Item(self.x, self.y, Item.base_damage_boost, Item.item_textures[1]))
-        game.items.append(Item(self.x, self.y, Item.shotgun_damage_boost, Item.item_textures[2]))
+        game.items.append(Item(self.x + 50, self.y, Item.shotgun_damage_boost, Item.item_textures[2]))
 
     def damage(self, damage):
         if not self.protected:

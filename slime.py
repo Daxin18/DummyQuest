@@ -6,6 +6,7 @@ import settings
 import utils
 from utils import display, handle_damage, give_damage, display_scroll
 from bullet import Bullet
+from item import Item
 
 slime_bullet_texture = pygame.image.load("textures\\Slime_bullet.xcf")
 still_animation = [pygame.image.load("textures\\Slime_still_0.xcf"), pygame.image.load("textures\\Slime_still_1.xcf"),
@@ -148,6 +149,9 @@ class Slime:
                                          settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
                                          settings.slime_bullet_speed, slime_bullet_texture))
         game.enemies.remove(self)
+        if random.randint(0, game.player.hp - 1) == 0:
+            game.items.append(Item(self.x, self.y, Item.health_potion, Item.item_textures[0]))
+
 
     def damage(self, damage):
         if not self.protected:

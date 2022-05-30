@@ -16,3 +16,5 @@ if __name__ == '__main__':
                 menu.paused.main()
             while utils.win:
                 menu.win.main()
+        while utils.open_settings:
+            menu.settings.main()
