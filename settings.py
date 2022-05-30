@@ -1,3 +1,4 @@
+import pygame
 
 player_hp = 100
 walking_speed = 3
@@ -27,7 +28,7 @@ shotgun_spread = 6  # the higher the value, the more accurate the shotgun is
 slime_speed = 2
 slime_size = 15
 slime_wandering_range = 100
-slime_wander_off_probability = 40   # slime has 1/[slime_wander_off_probability] to wander off
+slime_wander_off_probability = 20   # slime has 1/[slime_wander_off_probability] to wander off
 slime_behaviour_change = 60
 slime_attack_cooldown = 180
 slime_bullet_speed = 6
@@ -78,3 +79,10 @@ spawner_spawn_distance = 200  # not really a distance but whatever
 spawner_spawn_deviation = 150
 spawner_guardians = 3
 spawner_sight_range = 1000
+
+item_hover_time = 60
+item_hover_amount = 0.25
+health_potion_heal = 25
+item_pickup_radius = 100
+
+pickup_key = pygame.K_e

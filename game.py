@@ -13,6 +13,7 @@ from rock import Rock
 from tree import Tree
 from map import TileMap, SpriteSheet
 from spawner import Spawner
+from item import Item
 
 
 class Game:
@@ -25,6 +26,7 @@ class Game:
         self.enemy_bullets = []
         self.solids = []  # aka things you can collide with
         self.assets = []
+        self.items = []
         self.time = 0
 
         self.player = Player(utils.player_x, utils.player_y, 32, 32)
@@ -42,6 +44,7 @@ class Game:
         self.generate_random_terrain()
         self.tmap = self.initialize_map()
         self.generate_spawners()
+        self.generate_items()
 
     def main(self):
         self.time += 1
@@ -58,6 +61,10 @@ class Game:
         spawn = Spawner(-1000, 1000, 192, 256, self)
         self.enemies.append(spawn)
         self.solids.append(spawn)
+
+    def generate_items(self):
+        self.items.append(Item(800, 100, Item.health_potion, Item.item_textures[0]))
+        self.items.append(Item(1000, 100, Item.damage_boost, Item.item_textures[1]))
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
@@ -101,22 +108,17 @@ class Game:
 
     def handle_collisions(self):
         for bullet in self.player_bullets:
-            for entity in [*self.enemies, *self.solids]:
-                if bullet.hit_box.colliderect(entity.hit_box):
-                    try:  # if a bullet hits 2 things at once (rare occurance) it will throw ValueError
-                        if bullet.damage(entity):
-                            self.player_bullets.remove(bullet)
-                    except ValueError:
-                        0
+            if self.check_bullet_to_enemy(bullet):
+                self.check_bullet_to_solid(bullet)
 
         for bullet in self.enemy_bullets:
-            for entity in [self.player, *self.solids]:
-                if bullet.hit_box.colliderect(entity.hit_box):
-                    try:  # if a bullet hits 2 things at once (rare occurance) it will throw ValueError
-                        if bullet.damage(entity):
-                            self.enemy_bullets.remove(bullet)
-                    except ValueError:
-                        0
+            if bullet.hit_box.colliderect(self.player.hit_box):
+                try:  # if a bullet hits 2 things at once (rare occurance) it will throw ValueError
+                    if bullet.damage(self.player):
+                        self.enemy_bullets.remove(bullet)
+                except ValueError:
+                    0
+            self.check_bullet_to_solid(bullet)
 
         for solid in self.solids:
             utils.check_player_collision(solid, self.player)
@@ -177,6 +179,9 @@ class Game:
                              (enemy.x + display_scroll[0], enemy.y + 7*enemy.height/16 + display_scroll[1]))
         if keys[pygame.K_ESCAPE]:
             utils.paused = True
+        if keys[settings.pickup_key]:
+            for item in self.items:
+                item.use_item(self)
 
         # developer keys
         if settings.dev_keys:
@@ -219,6 +224,9 @@ class Game:
                 bullet.main()
             else:
                 self.enemy_bullets.remove(bullet)
+        # items
+        for item in self.items:
+            item.main()
 
     def render_hud(self):
         pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y + settings.crosshair_size + 5, 2, 5))
@@ -239,7 +247,7 @@ class Game:
                                                     self.mouse_y + settings.crosshair_size + 5, 3, 4))
 
         display.blit(utils.font.render("SCORE: " + str(self.SCORE), True, (0, 0, 255)), (display.get_width() / 2 - 70, 20))
-        display.blit(utils.font.render("TIME: " + str(int(self.time/3600)) + "min " + str(int(self.time/60)) + "s", True, (0, 0, 255)),
+        display.blit(utils.font.render("TIME: " + str(int(self.time/3600)) + "min " + str(int((self.time/60)%60)) + "s", True, (0, 0, 255)),
                      (10, 20))
         display.blit(utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),
                      (display.get_width() - 190, 10))
@@ -250,3 +258,23 @@ class Game:
         tilemap = TileMap(tmapPath, sheet)
         return tilemap
 
+    def check_bullet_to_enemy(self, bullet):
+        for enemy in self.enemies:
+            if bullet.hit_box.colliderect(enemy.hit_box):
+                try:
+                    if bullet.damage(enemy):
+                        self.player_bullets.remove(bullet)
+                        return False
+                except ValueError:
+                    0
+        return True
+
+    def check_bullet_to_solid(self, bullet):
+        for solid in self.solids:
+            if bullet.hit_box.colliderect(solid.hit_box):
+                try:
+                    if bullet.damage(solid) and not self.enemies.__contains__(solid):
+                        self.player_bullets.remove(bullet)
+                        break
+                except ValueError:
+                    0
