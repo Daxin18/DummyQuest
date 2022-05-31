@@ -58,7 +58,7 @@ class Game:
         self.handle_controls()
         self.render_hud()
         pygame.display.update()
-        # print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
+        print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
 
     def generate_spawners(self):
         for i in range(0, settings.spawner_amount):
@@ -68,16 +68,15 @@ class Game:
             self.solids.append(spawn)
 
     def generate_items(self):
-        self.items.append(Item(800, 100, Item.health_potion, Item.item_textures[0]))
+        for coordinates in settings.pizza_coordinates:
+            self.items.append(Item(coordinates[0], coordinates[1], Item.pizza, Item.item_textures[0]))
+        self.items.append(Item(800, 200, Item.cursed_boost, Item.item_textures[4]))
         self.items.append(Item(1000, 100, Item.base_damage_boost, Item.item_textures[1]))
         self.items.append(Item(1200, 100, Item.shotgun_damage_boost, Item.item_textures[2]))
-        self.items.append(Item(800, 200, Item.health_potion, Item.item_textures[0]))
         self.items.append(Item(1000, 200, Item.base_damage_boost, Item.item_textures[1]))
         self.items.append(Item(1200, 200, Item.shotgun_damage_boost, Item.item_textures[2]))
-        self.items.append(Item(800, 300, Item.health_potion, Item.item_textures[0]))
         self.items.append(Item(1000, 300, Item.base_damage_boost, Item.item_textures[1]))
         self.items.append(Item(1200, 300, Item.shotgun_damage_boost, Item.item_textures[2]))
-        self.items.append(Item(1000, 0, Item.game_won, Item.item_textures[3]))
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):

@@ -150,7 +150,7 @@ class Slime:
                                          settings.slime_bullet_speed, slime_bullet_texture))
         game.enemies.remove(self)
         if random.randint(0, game.player.hp - 1) == 0:
-            game.items.append(Item(self.x, self.y, Item.health_potion, Item.item_textures[0]))
+            game.items.append(Item(self.x, self.y, Item.pizza, Item.item_textures[0]))
 
 
     def damage(self, damage):

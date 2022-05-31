@@ -80,8 +80,8 @@ class TileMap:
         for row in tmap:
             x = 0
             for tile in row:
-                tiles.append(Tile(self.models[int(tile)], x * self.tile_size - self.map_w*settings.tmap_x_offset,
-                                  y * self.tile_size - self.map_h*settings.tmap_y_offset))
+                tiles.append(Tile(self.models[int(tile)], x * self.tile_size - self.map_w * settings.tmap_x_offset,
+                                  y * self.tile_size - self.map_h * settings.tmap_y_offset))
                 x += 1
             y += 1
         return tiles

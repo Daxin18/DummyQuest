@@ -127,6 +127,7 @@ def set_game_parameters():
     display_scroll[1] = 0
     collision_table[0] = 0
     collision_table[1] = 0
+    settings.player_health_cap = 1000
 
 
 def set_difficulty():

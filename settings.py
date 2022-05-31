@@ -1,7 +1,7 @@
 import pygame
 
 player_hp = 100
-player_health_cap = 1000   # maximum health you can have
+player_health_cap = 1000   # maximum health a player can have
 walking_speed = 3
 sprinting_boost = 3
 shooting_penalty = 1
@@ -90,6 +90,7 @@ health_potion_heal = 25
 item_pickup_radius = 100
 
 spawner_coordinates = [[-1150, 3150], [3400, -2500], [3200, 3300], [-2300, -2200]]
+pizza_coordinates = [[-1050, -1560], [3690, -1430], [2855, 2275], [-1048, 2137]]
 
 pickup_key = pygame.K_e
 
