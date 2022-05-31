@@ -24,9 +24,9 @@ class Menu:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 500, 400, 80, "Start", self.start_game))
-        self.buttons.append(Button(self, 600, 600, 400, 80, "Settings", self.open_settings))
-        self.buttons.append(Button(self, 600, 700, 400, 80, "Quit", self.quit))
+        self.buttons.append(Button(self, 600, 400, 400, 80, "Start", self.start_game))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Settings", self.open_settings))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Quit", self.quit))
 
     def update_mouse(self):
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
@@ -77,7 +77,7 @@ class Button:
         self.text = name
         self.name = utils.font_buttons.render(name, True, (0, 0, 0))
         self.function = function
-        self.hit_box = pygame.Rect(x - width/2, y - width/2, width, height)
+        self.hit_box = pygame.Rect(x - width/2, y - height/2, width, height)
         self.clicked = False
         self.texture = Button.base
 
@@ -85,9 +85,9 @@ class Button:
         self.choose_texture()
         pygame.draw.rect(display, (255, 0, 0), self.hit_box)
         texture_copy = pygame.transform.scale(self.texture, (self.width, self.height))
-        display.blit(texture_copy, (self.x - self.width/2, self.y - self.height * 2.5))
+        display.blit(texture_copy, (self.x - self.width/2, self.y - self.height/2))
         display.blit(self.name,
-                     (self.x - self.name.get_width()/2, self.y - self.height * 2.25))
+                     (self.x - self.name.get_width()/2, self.y - self.name.get_height()/2))
 
     def choose_texture(self):
         if self.hit_box.x < self.menu.mouse_x < self.hit_box.x + self.hit_box.width and\
@@ -117,8 +117,8 @@ class Death_screen:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 600, 400, 80, "Menu", self.go_back))
-        self.buttons.append(Button(self, 600, 700, 400, 80, "Quit", Menu.quit))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Menu", self.go_back))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Quit", Menu.quit))
 
     def handle_clicks(self):
         for event in pygame.event.get():
@@ -155,8 +155,8 @@ class Pause:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 600, 400, 80, "Resume", self.resume))
-        self.buttons.append(Button(self, 600, 700, 400, 80, "Menu", self.menu))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Resume", self.resume))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Menu", self.menu))
 
     def handle_clicks(self):
         for event in pygame.event.get():
@@ -198,8 +198,8 @@ class Win_screen:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 600, 400, 80, "Menu", self.go_back))
-        self.buttons.append(Button(self, 600, 700, 400, 80, "Quit", Menu.quit))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Menu", self.go_back))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "Quit", Menu.quit))
 
     def handle_clicks(self):
         for event in pygame.event.get():
@@ -235,9 +235,9 @@ class Settings:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 500, 400, 80, "Difficulty level", Settings.toggle_difficulty))
-        self.buttons.append(Button(self, 600, 600, 400, 80, "Crosshair dot", Settings.toggle_crosshair))
-        self.buttons.append(Button(self, 600, 700, 400, 80, "<-- Back", Settings.go_back))
+        self.buttons.append(Button(self, 600, 300, 400, 80, "Difficulty level", Settings.toggle_difficulty))
+        self.buttons.append(Button(self, 600, 400, 400, 80, "Crosshair dot", Settings.toggle_crosshair))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "<-- Back", Settings.go_back))
 
     def handle_clicks(self):
         for event in pygame.event.get():
@@ -277,16 +277,16 @@ class Settings:
     @staticmethod
     def manage_settings():
         if settings.crosshair_dot:
-            display.blit(utils.font_buttons.render("ON", True, (0, 255, 0)), (820, 420))
+            display.blit(utils.font_buttons.render("ON", True, (0, 255, 0)), (820, 380))
         else:
-            display.blit(utils.font_buttons.render("OFF", True, (255, 0, 0)), (820, 420))
+            display.blit(utils.font_buttons.render("OFF", True, (255, 0, 0)), (820, 380))
 
         if settings.difficulty_level == -1:
-            display.blit(utils.font_buttons.render("BABY", True, (0, 255, 0)), (820, 320))
+            display.blit(utils.font_buttons.render("BABY", True, (0, 255, 0)), (820, 280))
         elif settings.difficulty_level == 0:
-            display.blit(utils.font_buttons.render("EASY", True, (200, 255, 28)), (820, 320))
+            display.blit(utils.font_buttons.render("EASY", True, (200, 255, 28)), (820, 280))
         elif settings.difficulty_level == 1:
-            display.blit(utils.font_buttons.render("NORMAL", True, (249, 200, 30)), (820, 320))
+            display.blit(utils.font_buttons.render("NORMAL", True, (249, 200, 30)), (820, 280))
         else:
-            display.blit(utils.font_buttons.render("HARD", True, (255, 0, 0)), (820, 320))
+            display.blit(utils.font_buttons.render("HARD", True, (255, 0, 0)), (820, 280))
 

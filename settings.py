@@ -90,7 +90,10 @@ health_potion_heal = 25
 item_pickup_radius = 100
 
 spawner_coordinates = [[-1150, 3150], [3400, -2500], [3200, 3300], [-2300, -2200]]
-pizza_coordinates = [[-1050, -1560], [3690, -1430], [2855, 2275], [-1048, 2137]]
+pizza_coordinates = [[-1690, -1565], [3690, -1430], [2855, 2275], [-1048, 2137]]
+curse_coordinates = [[-2580, 3550]]
+base_boost_coordinates = [[-2520, -2710], [3690, 3500]]
+shotgun_boost_coordinates = [[3690, -2710]]
 
 pickup_key = pygame.K_e
 

@@ -6,10 +6,11 @@ import json
 import settings
 from utils import display, display_scroll
 
-tilenames = ['base.png', 'grass.png', 'flower1.png', 'flower2.png', 'road_corner_SE.png',
-             'road_corner_SW.png', 'road_corner_NW.png', 'road_corner_NE.png', 'road_E.png', 'road_S.png',
+tilenames = ['base.png', 'wheat.png', 'flower1.png', 'flower2.png', 'buried_curse.png',
+             'red_candle.png', 'blue_candle.png', 'plate.png', 'road_E.png', 'road_S.png',
              'road_W.png', 'road_N.png', 'road_full_1.png', 'road_full_2.png', 'road_NW.png',
-             'road_NE.png', 'road_SE.png', 'road_SW.png']
+             'road_NE.png', 'road_SE.png', 'road_SW.png', 'face.png', 'pumpkin.png',
+             'fountain.png', 'grass.png']
 
 
 class SpriteSheet:

@@ -70,13 +70,12 @@ class Game:
     def generate_items(self):
         for coordinates in settings.pizza_coordinates:
             self.items.append(Item(coordinates[0], coordinates[1], Item.pizza, Item.item_textures[0]))
-        self.items.append(Item(800, 200, Item.cursed_boost, Item.item_textures[4]))
-        self.items.append(Item(1000, 100, Item.base_damage_boost, Item.item_textures[1]))
-        self.items.append(Item(1200, 100, Item.shotgun_damage_boost, Item.item_textures[2]))
-        self.items.append(Item(1000, 200, Item.base_damage_boost, Item.item_textures[1]))
-        self.items.append(Item(1200, 200, Item.shotgun_damage_boost, Item.item_textures[2]))
-        self.items.append(Item(1000, 300, Item.base_damage_boost, Item.item_textures[1]))
-        self.items.append(Item(1200, 300, Item.shotgun_damage_boost, Item.item_textures[2]))
+        for coordinates in settings.curse_coordinates:
+            self.items.append(Item(coordinates[0], coordinates[1], Item.cursed_boost, Item.item_textures[4]))
+        for coordinates in settings.base_boost_coordinates:
+            self.items.append(Item(coordinates[0], coordinates[1], Item.base_damage_boost, Item.item_textures[1]))
+        for coordinates in settings.shotgun_boost_coordinates:
+            self.items.append(Item(coordinates[0], coordinates[1], Item.shotgun_damage_boost, Item.item_textures[2]))
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
