@@ -1,20 +1,25 @@
 import pygame
 
 import utils
-from menu import Menu
+import menu
 
 if __name__ == '__main__':
     pygame.init()
-    menu = Menu()
+    main_menu = menu.Menu()
+    settings_screen = menu.Settings()
+    pause_overlay = menu.Pause()
+    choice_screen = menu.Choice(main_menu)
     while utils.running:
-        menu.main()
+        main_menu.main()
+        while utils.choose_game_mode:
+            choice_screen.main()
         while utils.game_running:
-            menu.game.main()
+            main_menu.game.main()
             while utils.dead:
-                menu.death_screen.main()
+                main_menu.death_screen.main()
             while utils.paused:
-                menu.paused.main()
+                pause_overlay.main()
             while utils.win:
-                menu.win.main()
+                main_menu.win.main()
         while utils.open_settings:
-            menu.settings.main()
+            settings_screen.main()

@@ -29,6 +29,7 @@ dead = False
 paused = False
 win = False
 open_settings = False
+choose_game_mode = False
 
 
 def move(x, y):

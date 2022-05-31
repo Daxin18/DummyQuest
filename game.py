@@ -58,7 +58,7 @@ class Game:
         self.handle_controls()
         self.render_hud()
         pygame.display.update()
-        print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
+        # print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
 
     def generate_spawners(self):
         for i in range(0, settings.spawner_amount):

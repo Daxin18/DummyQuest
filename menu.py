@@ -24,19 +24,18 @@ class Menu:
         self.handle_clicks()
 
     def initialize_buttons(self):
-        self.buttons.append(Button(self, 600, 400, 400, 80, "Start", self.start_game))
+        self.buttons.append(Button(self, 600, 400, 400, 80, "Play", self.play))
         self.buttons.append(Button(self, 600, 500, 400, 80, "Settings", self.open_settings))
         self.buttons.append(Button(self, 600, 600, 400, 80, "Quit", self.quit))
 
     def update_mouse(self):
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
 
-    def start_game(self):
-        pygame.mouse.set_visible(False)
-        self.game = Game()
-        utils.game_running = True
+    def play(self):
+        utils.choose_game_mode = True
 
-    def open_settings(self):
+    @staticmethod
+    def open_settings():
         utils.open_settings = True
 
     @staticmethod
@@ -176,11 +175,13 @@ class Pause:
             button.render()
         pygame.display.update()
 
-    def menu(self):
+    @staticmethod
+    def menu():
         utils.game_running = False
         utils.paused = False
 
-    def resume(self):
+    @staticmethod
+    def resume():
         pygame.mouse.set_visible(False)
         utils.paused = False
 
@@ -218,9 +219,11 @@ class Win_screen:
             button.render()
         pygame.display.update()
 
-    def go_back(self):
+    @staticmethod
+    def go_back():
         utils.game_running = False
         utils.win = False
+
 
 class Settings:
     def __init__(self):
@@ -290,3 +293,56 @@ class Settings:
         else:
             display.blit(utils.font_buttons.render("HARD", True, (255, 0, 0)), (820, 280))
 
+
+class Choice:
+    def __init__(self, menu):
+        self.menu = menu
+        self.buttons = []
+        self.initialize_buttons()
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+
+    def main(self):
+        pygame.mouse.set_visible(True)
+        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
+        self.manage_display()
+        self.handle_clicks()
+
+    def initialize_buttons(self):
+        self.buttons.append(Button(self, 600, 300, 400, 80, "Normal", self.normal))
+        self.buttons.append(Button(self, 300, 450, 400, 80, "Tutorial (W.I.P.)", self.tutorial))
+        self.buttons.append(Button(self, 900, 450, 400, 80, "Pizza hunt (W.I.P.)", self.pizza))
+        self.buttons.append(Button(self, 600, 600, 400, 80, "<-- Back", self.go_back))
+
+    def handle_clicks(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for button in self.buttons:
+                        button.do_sth()
+
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+    def manage_display(self):
+        display.fill((39, 142, 183))
+        message = utils.font_death.render("Choose game mode", True, (138, 238, 255))
+        display.blit(message, (180, 100))
+        for button in self.buttons:
+            button.render()
+        pygame.display.update()
+
+    def normal(self):
+        pygame.mouse.set_visible(False)
+        self.menu.game = Game()
+        utils.game_running = True
+        utils.choose_game_mode = False
+
+    def tutorial(self):
+        utils.choose_game_mode = False
+
+    def pizza(self):
+        utils.choose_game_mode = False
+
+    @staticmethod
+    def go_back():
+        utils.choose_game_mode = False
