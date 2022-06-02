@@ -87,8 +87,8 @@ class Spawner:
         deviation_y = random.randint(-settings.spawner_spawn_deviation, settings.spawner_spawn_deviation)
         angle = math.atan2(self.y + display_scroll[1] - player_y - deviation_y,
                            self.x + display_scroll[0] - player_x - deviation_x)
-        dist_x = self.x -(math.cos(angle) * settings.spawner_spawn_distance)
-        dist_y = self.y -(math.sin(angle) * settings.spawner_spawn_distance)
+        dist_x = self.x - (math.cos(angle) * settings.spawner_spawn_distance)
+        dist_y = self.y - (math.sin(angle) * settings.spawner_spawn_distance)
         game.enemies.append(Slime(dist_x, dist_y))
         for i in range(0, amount - 1):
             deviation_x = random.randint(-settings.spawner_spawn_deviation, settings.spawner_spawn_deviation)

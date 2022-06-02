@@ -6,6 +6,8 @@ import settings
 from utils import display
 from game import Game
 
+menuu = pygame.image.load("textures\\menuu.0001.jpg")
+
 
 class Menu:
     def __init__(self):
@@ -47,8 +49,13 @@ class Menu:
 
     def manage_display(self):
         display.fill((39, 142, 183))
+        display.blit(menuu, (0, 0))
         for button in self.buttons:
             button.render()
+        title1 = utils.title_font.render("Dummy", True, (0, 0, 0))
+        title2 = utils.title_font.render("Quest", True, (0, 0, 0))
+        display.blit(title1, (365, 50))
+        display.blit(title2, (400, 180))
         pygame.display.update()
 
     def handle_clicks(self):

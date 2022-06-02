@@ -10,7 +10,7 @@ tmapPath = "maps\\map_1.csv"
 
 display = pygame.display.set_mode((1200, 700))
 display_scroll = [0, 0]
-collision_table = [0, 0]    # collision on x, collision on y
+collision_table = [0, 0]    # [collision on x, collision on y]
 
 player_x = display.get_width()/2
 player_y = display.get_height()/2
@@ -22,6 +22,7 @@ font_enemies = pygame.font.Font('freesansbold.ttf', 20)
 font_buttons = pygame.font.Font('dpcomic.ttf', 40)  # or 'prstart.ttf', still can't decide
 font_death = pygame.font.Font('dpcomic.ttf', 120)  # or 'prstart.ttf', still can't decide
 font_items = pygame.font.Font('freesansbold.ttf', 14)
+title_font = pygame.font.Font('StraightToHellSinnerBB.ttf', 180)
 
 running = True
 game_running = False
