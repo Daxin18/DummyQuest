@@ -1,7 +1,9 @@
 import pygame
 
 player_hp = 100
-player_health_cap = 1000   # maximum health a player can have
+player_health_cap = 1000  # maximum health a player can have
+player_base_health_cap = 1000   # same as above, but the one above is changing if a player picks up an item,
+                                # this one is constant so it is used to set parameters
 walking_speed = 3
 sprinting_boost = 3
 shooting_penalty = 1
@@ -86,7 +88,7 @@ spawner_amount = 4
 
 item_hover_time = 60
 item_hover_amount = 0.25
-health_potion_heal = 25
+pizza_heal = 25
 item_pickup_radius = 100
 
 spawner_coordinates = [[-1150, 3150], [3400, -2500], [3200, 3300], [-2300, -2200]]

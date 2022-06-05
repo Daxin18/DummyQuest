@@ -103,6 +103,12 @@ class Game:
         for enemy in self.enemies:
             utils.check_kill_zone(self, enemy)
 
+        if utils.gamemode == 1 and self.player.hp >= settings.player_health_cap:
+                utils.win = True
+                utils.game_running = False
+                print("WTF")
+
+
     def reset_parameters(self):
         # display.fill((105, 105, 105))
         display.fill((150, 15, 15))

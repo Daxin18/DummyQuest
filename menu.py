@@ -6,7 +6,7 @@ import settings
 from utils import display
 from game import Game
 
-menuu = pygame.image.load("textures\\menuu.0001.jpg")
+menuu = pygame.image.load("textures\\menuu.jpg")
 
 
 class Menu:
@@ -317,7 +317,7 @@ class Choice:
     def initialize_buttons(self):
         self.buttons.append(Button(self, 600, 300, 400, 80, "Normal", self.normal))
         self.buttons.append(Button(self, 300, 450, 400, 80, "Tutorial (W.I.P.)", self.tutorial))
-        self.buttons.append(Button(self, 900, 450, 400, 80, "Pizza hunt (W.I.P.)", self.pizza))
+        self.buttons.append(Button(self, 900, 450, 400, 80, "Pizza hunt", self.pizza))
         self.buttons.append(Button(self, 600, 600, 400, 80, "<-- Back", self.go_back))
 
     def handle_clicks(self):
@@ -341,6 +341,7 @@ class Choice:
     def normal(self):
         pygame.mouse.set_visible(False)
         self.menu.game = Game()
+        utils.gamemode = 0
         utils.game_running = True
         utils.choose_game_mode = False
 
@@ -348,6 +349,10 @@ class Choice:
         utils.choose_game_mode = False
 
     def pizza(self):
+        pygame.mouse.set_visible(False)
+        self.menu.game = Game()
+        utils.gamemode = 1
+        utils.game_running = True
         utils.choose_game_mode = False
 
     @staticmethod

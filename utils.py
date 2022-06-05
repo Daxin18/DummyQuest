@@ -31,6 +31,7 @@ paused = False
 win = False
 open_settings = False
 choose_game_mode = False
+gamemode = 0
 
 
 def move(x, y):
@@ -129,7 +130,7 @@ def set_game_parameters():
     display_scroll[1] = 0
     collision_table[0] = 0
     collision_table[1] = 0
-    settings.player_health_cap = 1000
+    settings.player_health_cap = settings.player_base_health_cap
 
 
 def set_difficulty():

@@ -41,15 +41,15 @@ class Player:
         self.shotgun_bonus_damage = settings.base_bonus_shotgun_damage
 
     def main(self, mouse_x, mouse_y):
-        if self.dash_cooldown != 0:
+        if self.dash_cooldown != 0:  # dash_cooldown
             self.dash_cooldown -= 1
-        if self.shotgun_cooldown != 0:
+        if self.shotgun_cooldown != 0:  # shotgun_cooldown
             self.shotgun_cooldown -= 1
-        if self.shotgun_penalty != 0:
+        if self.shotgun_penalty != 0:   # shotgun_penalty
             self.shotgun_penalty -= 1
-        if self.shooting_penalty != 0:
+        if self.shooting_penalty != 0:  # shooting_penalty
             self.shooting_penalty -= 1
-        if self.hp >= settings.player_health_cap:
+        if self.hp > settings.player_health_cap:   # health_cap
             self.hp = settings.player_health_cap
         handle_damage(self)
         self.draw_player(mouse_x, mouse_y)

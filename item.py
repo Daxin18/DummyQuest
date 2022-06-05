@@ -49,7 +49,7 @@ class Item:
 
     @staticmethod
     def pizza(game):
-        game.player.hp += settings.health_potion_heal
+        game.player.hp += settings.pizza_heal
 
     @staticmethod
     def base_damage_boost(game):
