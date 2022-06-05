@@ -2,6 +2,7 @@ import pygame
 import math
 
 import settings
+import utils
 from utils import display, player_y, player_x, handle_damage, give_damage, display_scroll
 from item import Item
 
@@ -19,7 +20,7 @@ class Dummy:
         self.damage_flick_cooldown = 0
         self.damaged = False
         self.damage_flick_dir = 0
-        self.hp = 10000
+        self.hp = settings.dummy_hp
         self.protected = False
         self.movement_blockade = [0, 0]
 
@@ -48,10 +49,11 @@ class Dummy:
         print("Dummy died!")
         game.enemies.remove(self)
         game.solids.remove(self)
-        game.items.append(Item(self.x, self.y, Item.game_won, Item.item_textures[3]))
+        if utils.gamemode != 1:
+            game.items.append(Item(self.x, self.y, Item.game_won, Item.item_textures[3]))
 
     def damage(self, damage):
-        if not self.protected:
+        if not self.protected and not utils.tutorial_running:
             give_damage(self, damage)
         return True
 

@@ -1,5 +1,7 @@
 import pygame
 
+dummy_hp = 10000
+
 player_hp = 100
 player_health_cap = 1000  # maximum health a player can have
 player_base_health_cap = 1000   # same as above, but the one above is changing if a player picks up an item,

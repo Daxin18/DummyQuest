@@ -4,30 +4,38 @@ import random
 
 import settings
 import utils
-from utils import display, display_scroll, move, collision_table, game_tmap_path
+from utils import display, display_scroll, move, collision_table, tutorial_tmap_path
 from slime import Slime
 from guardian import Guardian
 from player import Player
 from dummy import Dummy
 from rock import Rock
-from tree import Tree
 from map import TileMap, SpriteSheet
-from spawner import Spawner
 from item import Item
 
 
-class Game:
+class Tutorial:
     def __init__(self):
         utils.set_game_parameters()
         utils.paused = False
         utils.win = False
         utils.dead = False
+        utils.message_break = False
+
+        self.message = MessageBreak(Message("XD", 0), self)
+        # stage controls what a player can do during a tutorial
+        self.stage = 0
+        # 0 - no control
+        # 1 - AWSD movement
+        # 2 - shooting
+        # 3 - sprinting
+        # 4 - dashing
+        # 5 - fight
 
         self.player_bullets = []
         self.enemies = []
         self.enemy_bullets = []
         self.solids = []  # aka things you can collide with
-        self.assets = []
         self.items = []
         self.time = 0
 
@@ -43,10 +51,8 @@ class Game:
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
         self.environment_speed = settings.walking_speed
 
-        self.generate_random_terrain()
         self.tmap = self.initialize_map()
-        self.generate_spawners()
-        self.generate_items()
+        self.initialize_items()
 
     def main(self):
         self.time += 1
@@ -60,41 +66,8 @@ class Game:
         pygame.display.update()
         # print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
 
-    def generate_spawners(self):
-        for i in range(0, settings.spawner_amount):
-            spawn = Spawner(settings.spawner_coordinates[i][0], settings.spawner_coordinates[i][1],
-                            settings.spawner_height, settings.spawner_width, self)
-            self.enemies.append(spawn)
-            self.solids.append(spawn)
-
-    def generate_items(self):
-        for coordinates in settings.pizza_coordinates:
-            self.items.append(Item(coordinates[0], coordinates[1], Item.pizza, Item.item_textures[0]))
-        for coordinates in settings.curse_coordinates:
-            self.items.append(Item(coordinates[0], coordinates[1], Item.cursed_boost, Item.item_textures[4]))
-        for coordinates in settings.base_boost_coordinates:
-            self.items.append(Item(coordinates[0], coordinates[1], Item.base_damage_boost, Item.item_textures[1]))
-        for coordinates in settings.shotgun_boost_coordinates:
-            self.items.append(Item(coordinates[0], coordinates[1], Item.shotgun_damage_boost, Item.item_textures[2]))
-
-    def generate_random_terrain(self):
-        for i in range(settings.rock_number):
-            r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-            r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            while 550 < r_x < 650 and 250 < r_y < 350:
-                r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-                r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            r_w = random.randint(45, 70)
-            r_h = random.randint(45, 70)
-            self.solids.append(Rock(r_x, r_y, r_w, r_h))
-        for i in range(settings.tree_number):
-            r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-            r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            while 550 < r_x < 650 and 250 < r_y < 350:
-                r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-                r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            r_s = random.randint(25, 40)
-            self.assets.append(Tree(r_x, r_y, r_s))
+    def initialize_items(self):
+        self.items.append(Item(self.dummy.x, self.dummy.y, Tutorial.intro, Item.item_textures[5]))
 
     def check_for_end(self):
         if self.player.hp <= 0:
@@ -148,7 +121,7 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN and not self.player.running:
+            if event.type == pygame.MOUSEBUTTONDOWN and not self.player.running and self.stage >= 2:
                 if event.button == 1:
                     self.player.primary_fire(self.mouse_x, self.mouse_y, self.player_bullets)
                 if event.button == 3:
@@ -161,28 +134,28 @@ class Game:
             self.environment_speed -= settings.shooting_penalty
         if self.player.shotgun_penalty != 0:
             self.environment_speed -= settings.shotgun_shooting_penalty
-        if keys[pygame.K_SPACE] and self.player.dash_cooldown == 0:
+        if self.stage >= 4 and keys[pygame.K_SPACE] and self.player.dash_cooldown == 0:
             self.environment_speed += settings.dash_speed
             self.player.dash(keys)
         if not keys[pygame.K_SPACE]:
             self.player.reset_dash()
-        if keys[pygame.K_LSHIFT]:
+        if self.stage >= 3 and keys[pygame.K_LSHIFT]:
             self.environment_speed += settings.sprinting_boost
             self.player.running = True
         if not keys[pygame.K_LSHIFT]:
             self.player.running = False
 
         # movement
-        if keys[pygame.K_a]:
+        if self.stage >= 1 and keys[pygame.K_a]:
             if collision_table[0] >= 0:
                 move(self.environment_speed, 0)
-        if keys[pygame.K_w]:
+        if self.stage >= 1 and keys[pygame.K_w]:
             if collision_table[1] <= 0:
                 move(0, self.environment_speed)
-        if keys[pygame.K_s]:
+        if self.stage >= 1 and keys[pygame.K_s]:
             if collision_table[1] >= 0:
                 move(0, -self.environment_speed)
-        if keys[pygame.K_d]:
+        if self.stage >= 1 and keys[pygame.K_d]:
             if collision_table[0] <= 0:
                 move(-self.environment_speed, 0)
 
@@ -219,9 +192,6 @@ class Game:
     def render_stuff(self):
         for solid in self.solids:
             solid.render_solid()
-        # assets
-        for asset in self.assets:
-            asset.render_asset()
         self.player.main(self.mouse_x, self.mouse_y)
         for enemy in self.enemies:
             enemy.main()
@@ -245,22 +215,23 @@ class Game:
             item.main()
 
     def render_hud(self):
-        pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y + settings.crosshair_size + 5, 2, 5))
-        pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y - settings.crosshair_size - 10, 2, 5))
-        pygame.draw.rect(display, (255, 255, 255), (self.mouse_x + settings.crosshair_size + 4, self.mouse_y - 1, 5, 2))
-        pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - settings.crosshair_size - 10, self.mouse_y - 1, 5, 2))
-        if settings.crosshair_dot:
-            pygame.draw.circle(display, (255, 255, 255), (self.mouse_x, self.mouse_y), 1)
-        if self.player.running:
-            no_shooting = utils.font.render("X", True, (255, 0, 0))
-            display.blit(no_shooting, (self.mouse_x - 11, self.mouse_y - 15))
-        if self.player.shotgun_cooldown == 0:
-            pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size,
-                                                    self.mouse_y + settings.crosshair_size + 5, 3, 4))
-            pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 4,
-                                                    self.mouse_y + settings.crosshair_size + 5, 3, 4))
-            pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 8,
-                                                    self.mouse_y + settings.crosshair_size + 5, 3, 4))
+        if self.stage >= 2:
+            pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y + settings.crosshair_size + 5, 2, 5))
+            pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y - settings.crosshair_size - 10, 2, 5))
+            pygame.draw.rect(display, (255, 255, 255), (self.mouse_x + settings.crosshair_size + 4, self.mouse_y - 1, 5, 2))
+            pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - settings.crosshair_size - 10, self.mouse_y - 1, 5, 2))
+            if settings.crosshair_dot:
+                pygame.draw.circle(display, (255, 255, 255), (self.mouse_x, self.mouse_y), 1)
+            if self.player.running:
+                no_shooting = utils.font.render("X", True, (255, 0, 0))
+                display.blit(no_shooting, (self.mouse_x - 11, self.mouse_y - 15))
+            if self.player.shotgun_cooldown == 0:
+                pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size,
+                                                        self.mouse_y + settings.crosshair_size + 5, 3, 4))
+                pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 4,
+                                                        self.mouse_y + settings.crosshair_size + 5, 3, 4))
+                pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 8,
+                                                        self.mouse_y + settings.crosshair_size + 5, 3, 4))
 
         display.blit(utils.font.render("SCORE: " + str(self.SCORE), True, (0, 0, 255)), (display.get_width() / 2 - 70, 20))
         display.blit(utils.font.render("TIME: " + str(int(self.time/3600)) + "min " + str(int((self.time/60)%60)) + "s", True, (0, 0, 255)),
@@ -271,7 +242,7 @@ class Game:
 
     def initialize_map(self):
         sheet = SpriteSheet('textures\\tiles\\spritesheet.png')
-        tilemap = TileMap(game_tmap_path, sheet)
+        tilemap = TileMap(tutorial_tmap_path, sheet)
         return tilemap
 
     def check_bullet_to_enemy(self, bullet):
@@ -304,3 +275,59 @@ class Game:
                         break
                 except ValueError:
                     0
+
+    @staticmethod
+    def intro(tutorial):
+        tutorial.message.set_message(Message(["Hello there young traveller! Do you wanna play a game?"], 0))
+        utils.message_break = True
+        tutorial.items.append(Item(tutorial.dummy.x, tutorial.dummy.y, Tutorial.movement, Item.item_textures[5]))
+
+    @staticmethod
+    def movement(tutorial):
+        tutorial.message.set_message(Message(["Now... let's start with moving, use:", "A  - to move left",
+                                             "W - to move up", "S - to move down", "D - to move right"], 1))
+        utils.message_break = True
+
+
+class MessageBreak:
+    def __init__(self, message, tutorial):
+        self.mess = message
+        self.tutorial = tutorial
+
+    def main(self):
+        self.mess.main()
+        self.handle_clicks()
+        pygame.display.update()
+
+    def set_message(self, mess):
+        self.mess = mess
+
+    def handle_clicks(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    print("Hello world")
+                    self.tutorial.stage = self.mess.return_stage
+                    utils.message_break = False
+
+
+class Message:
+
+    # continue_mess = utils.font_items.render(f"Press [{pygame.key.name(settings.pickup_key)}] to continue", True, (255, 255, 255))
+    continue_mess = utils.font_items.render(f"Press [LMB] to continue", True, (255, 255, 255))
+
+    def __init__(self, text, return_stage):
+        self.mess = []
+        for text in text:
+            self.mess.append(utils.font_items.render(text, True, (255, 255, 255)))
+        self.return_stage = return_stage
+
+    def main(self):
+        pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 580, 1200, 120))
+        for i in range(0, len(self.mess)):
+            display.blit(self.mess[i], (display.get_width()/2 - self.mess[i].get_width()/2, 590 + i*20))
+        display.blit(Message.continue_mess, (1000, 675))

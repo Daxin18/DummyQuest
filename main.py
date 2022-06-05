@@ -23,3 +23,14 @@ if __name__ == '__main__':
                 main_menu.win.main()
         while utils.open_settings:
             settings_screen.main()
+        while utils.tutorial_running:
+            main_menu.tutorial.main()
+            while utils.message_break:
+                main_menu.tutorial.message.main()
+            while utils.dead:
+                main_menu.death_screen.main()
+            while utils.paused:
+                pause_overlay.main()
+            while utils.win:
+                main_menu.win.main()
+

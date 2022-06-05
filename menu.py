@@ -5,6 +5,7 @@ import utils
 import settings
 from utils import display
 from game import Game
+from tutorial import Tutorial
 
 menuu = pygame.image.load("textures\\menuu.jpg")
 
@@ -15,6 +16,7 @@ class Menu:
         self.buttons = []
         self.initialize_buttons()
         self.game = Game()
+        self.tutorial = Tutorial()
         self.death_screen = Death_screen(self.game)
         self.paused = Pause()
         self.win = Win_screen(self.game)
@@ -146,6 +148,7 @@ class Death_screen:
 
     def go_back(self):
         utils.game_running = False
+        utils.tutorial_running = False
         utils.dead = False
 
 class Pause:
@@ -185,6 +188,7 @@ class Pause:
     @staticmethod
     def menu():
         utils.game_running = False
+        utils.tutorial_running = False
         utils.paused = False
 
     @staticmethod
@@ -229,6 +233,7 @@ class Win_screen:
     @staticmethod
     def go_back():
         utils.game_running = False
+        utils.tutorial_running = False
         utils.win = False
 
 
@@ -346,6 +351,10 @@ class Choice:
         utils.choose_game_mode = False
 
     def tutorial(self):
+        pygame.mouse.set_visible(False)
+        self.menu.tutorial = Tutorial()
+        utils.tutorial_running = True
+        utils.message_break = False
         utils.choose_game_mode = False
 
     def pizza(self):

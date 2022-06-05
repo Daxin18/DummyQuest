@@ -6,7 +6,8 @@ from settings import damage_flick, damage_flick_cooldown, collision_tolerance
 
 pygame.init()
 
-tmapPath = "maps\\map_1.csv"
+game_tmap_path = "maps\\map_1.csv"
+tutorial_tmap_path = "maps\\tutorial.csv"
 
 display = pygame.display.set_mode((1200, 700))
 display_scroll = [0, 0]
@@ -32,6 +33,8 @@ win = False
 open_settings = False
 choose_game_mode = False
 gamemode = 0
+tutorial_running = False
+message_break = False
 
 
 def move(x, y):
