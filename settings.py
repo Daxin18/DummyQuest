@@ -100,5 +100,7 @@ base_boost_coordinates = [[-2520, -2710], [3690, 3500]]
 shotgun_boost_coordinates = [[3690, -2710]]
 
 pickup_key = pygame.K_e
+sprinting_button = pygame.K_LSHIFT
+dash_button = pygame.K_SPACE
 
 difficulty_level = 1

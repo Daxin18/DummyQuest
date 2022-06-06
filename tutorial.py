@@ -13,6 +13,8 @@ from rock import Rock
 from map import TileMap, SpriteSheet
 from item import Item
 
+dummy_text = pygame.image.load("textures\\Dummy_dialogue.xcf")
+
 
 class Tutorial:
     def __init__(self):
@@ -27,10 +29,11 @@ class Tutorial:
         self.stage = 0
         # 0 - no control
         # 1 - AWSD movement
-        # 2 - shooting
-        # 3 - sprinting
-        # 4 - dashing
-        # 5 - fight
+        # 2 - shooting1 (primary fire)
+        # 3 - shooting2 (secondary fire)
+        # 4 - sprinting
+        # 5 - dashing
+        # 6 - fight
 
         self.player_bullets = []
         self.enemies = []
@@ -85,11 +88,13 @@ class Tutorial:
         self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
                                         Tutorial.movement, Item.item_textures[5]))
         self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
-                                        Tutorial.shooting, Item.item_textures[5]))
+                                        Tutorial.shooting1, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.shooting2, Item.item_textures[5]))
         self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
                                         Tutorial.sprinting, Item.item_textures[5]))
-        #self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
-        #                                Tutorial.dashing, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.dashing, Item.item_textures[5]))
         #self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
         #                                Tutorial.fight, Item.item_textures[5]))
 
@@ -157,7 +162,7 @@ class Tutorial:
                 elif self.stage >= 2:
                     if event.button == 1 :
                         self.player.primary_fire(self.mouse_x, self.mouse_y, self.player_bullets)
-                    if event.button == 3:
+                    if self.stage >= 3 and event.button == 3:
                         self.player.shotgun(self.mouse_x, self.mouse_y, self.player_bullets)
 
         keys = pygame.key.get_pressed()
@@ -167,15 +172,15 @@ class Tutorial:
             self.environment_speed -= settings.shooting_penalty
         if self.player.shotgun_penalty != 0:
             self.environment_speed -= settings.shotgun_shooting_penalty
-        if self.stage >= 4 and keys[pygame.K_SPACE] and self.player.dash_cooldown == 0:
+        if self.stage >= 5 and keys[settings.dash_button] and self.player.dash_cooldown == 0:
             self.environment_speed += settings.dash_speed
             self.player.dash(keys)
-        if not keys[pygame.K_SPACE]:
+        if not keys[settings.dash_button]:
             self.player.reset_dash()
-        if self.stage >= 3 and keys[pygame.K_LSHIFT]:
+        if self.stage >= 4 and keys[settings.sprinting_button]:
             self.environment_speed += settings.sprinting_boost
             self.player.running = True
-        if not keys[pygame.K_LSHIFT]:
+        if not keys[settings.sprinting_button]:
             self.player.running = False
 
         # movement
@@ -258,7 +263,7 @@ class Tutorial:
             if self.player.running:
                 no_shooting = utils.font.render("X", True, (255, 0, 0))
                 display.blit(no_shooting, (self.mouse_x - 11, self.mouse_y - 15))
-            if self.player.shotgun_cooldown == 0:
+            if self.player.shotgun_cooldown == 0 and self.stage >= 3:
                 pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size,
                                                         self.mouse_y + settings.crosshair_size + 5, 3, 4))
                 pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 4,
@@ -271,7 +276,8 @@ class Tutorial:
                      (10, 20))
         display.blit(utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),
                      (display.get_width() - 190, 10))
-        self.player.show_dash_cooldown()
+        if self.stage >= 4:
+            self.player.show_dash_cooldown()
 
     def initialize_map(self):
         sheet = SpriteSheet('textures\\tiles\\spritesheet.png')
@@ -325,13 +331,20 @@ class Tutorial:
         tutorial.current_dialogue += 1
 
     @staticmethod
-    def shooting(tutorial):
+    def shooting1(tutorial):
         tutorial.cutscene = True
         tutorial.message.set_message(Message(["Now, let's learn how to shoot! Press:",
-                                              "LMB - primary fire, single bullet",
+                                              "LMB - primary fire, single bullet"], 2))
+        tutorial.next_dialogue_in = 600
+        tutorial.current_dialogue += 1
+
+    @staticmethod
+    def shooting2(tutorial):
+        tutorial.cutscene = True
+        tutorial.message.set_message(Message(["If you need more firepower you can use:",
                                               "RMB - secondary fire, multiple bullets on a short cooldown",
                                               "Note, that there is an indicator on your crosshair that "
-                                              "tells you when you can shoot secondary fire again"], 2))
+                                              "tells you when you can shoot secondary fire again"], 3))
         tutorial.next_dialogue_in = 600
         tutorial.current_dialogue += 1
 
@@ -340,8 +353,18 @@ class Tutorial:
         tutorial.cutscene = True
         tutorial.message.set_message(Message(["You might have noticed, that you move pretty slow",
                                               "Especially when shooting... but there is a solution, just press",
-                                              "Shift - sprint, makes you move faster",
-                                              "Note, that you cannot shoot while sprinting"], 3))
+                                              f"[{str.upper(pygame.key.name(settings.sprinting_button))}] "
+                                              "to sprint and move faster",
+                                              "Note, that you cannot shoot while sprinting"], 4))
+        tutorial.next_dialogue_in = 600
+        tutorial.current_dialogue += 1
+
+    @staticmethod
+    def dashing(tutorial):
+        tutorial.cutscene = True
+        tutorial.message.set_message(Message(["I think we all know, you won't stop there...",
+                                              f"Use [{str.upper(pygame.key.name(settings.dash_button))}] to dash!",
+                                              "It makes you super fast and invincible for a short period"], 5))
         tutorial.next_dialogue_in = 600
         # tutorial.current_dialogue += 1
 
@@ -385,6 +408,7 @@ class Message:
 
     def main(self):
         pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 580, 1200, 120))
+        display.blit(dummy_text, (30, 500))
         for i in range(0, len(self.mess)):
             display.blit(self.mess[i], (display.get_width()/2 - self.mess[i].get_width()/2, 590 + i*20))
         display.blit(Message.continue_mess, (1000, 675))
