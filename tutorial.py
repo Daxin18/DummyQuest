@@ -52,10 +52,20 @@ class Tutorial:
         self.environment_speed = settings.walking_speed
 
         self.tmap = self.initialize_map()
+
+        self.cutscene = False
+        self.next_dialogue_in = 0
+        self.current_dialogue = 0
+        self.dialogue_items = []
         self.initialize_items()
 
     def main(self):
         self.time += 1
+        if self.next_dialogue_in > 0:
+            self.next_dialogue_in -= 1
+        else:
+            self.spawn_dialogue_item()
+
         self.check_for_end()
         self.reset_parameters()
         self.handle_collisions()
@@ -63,11 +73,29 @@ class Tutorial:
         self.render_stuff()
         self.handle_controls()
         self.render_hud()
+        if self.cutscene:
+            self.stage = 0
+            self.message.main()
         pygame.display.update()
         # print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
 
     def initialize_items(self):
-        self.items.append(Item(self.dummy.x, self.dummy.y, Tutorial.intro, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width/2, self.dummy.y - self.dummy.height/6,
+                                   Tutorial.intro, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.movement, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.shooting, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.sprinting, Item.item_textures[5]))
+        #self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+        #                                Tutorial.dashing, Item.item_textures[5]))
+        #self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+        #                                Tutorial.fight, Item.item_textures[5]))
+
+    def spawn_dialogue_item(self):
+        if len(self.items) < 1:
+            self.items.append(self.dialogue_items[self.current_dialogue])
 
     def check_for_end(self):
         if self.player.hp <= 0:
@@ -121,11 +149,16 @@ class Tutorial:
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN and not self.player.running and self.stage >= 2:
-                if event.button == 1:
-                    self.player.primary_fire(self.mouse_x, self.mouse_y, self.player_bullets)
-                if event.button == 3:
-                    self.player.shotgun(self.mouse_x, self.mouse_y, self.player_bullets)
+            if event.type == pygame.MOUSEBUTTONDOWN and not self.player.running:
+                if self.cutscene:
+                    if event.button == 1:
+                        self.cutscene = False
+                        self.stage = self.message.mess.return_stage
+                elif self.stage >= 2:
+                    if event.button == 1 :
+                        self.player.primary_fire(self.mouse_x, self.mouse_y, self.player_bullets)
+                    if event.button == 3:
+                        self.player.shotgun(self.mouse_x, self.mouse_y, self.player_bullets)
 
         keys = pygame.key.get_pressed()
 
@@ -215,7 +248,7 @@ class Tutorial:
             item.main()
 
     def render_hud(self):
-        if self.stage >= 2:
+        if self.stage >= 1:
             pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y + settings.crosshair_size + 5, 2, 5))
             pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y - settings.crosshair_size - 10, 2, 5))
             pygame.draw.rect(display, (255, 255, 255), (self.mouse_x + settings.crosshair_size + 4, self.mouse_y - 1, 5, 2))
@@ -278,15 +311,39 @@ class Tutorial:
 
     @staticmethod
     def intro(tutorial):
+        tutorial.cutscene = True
         tutorial.message.set_message(Message(["Hello there young traveller! Do you wanna play a game?"], 0))
-        utils.message_break = True
-        tutorial.items.append(Item(tutorial.dummy.x, tutorial.dummy.y, Tutorial.movement, Item.item_textures[5]))
+        tutorial.next_dialogue_in = 120
+        tutorial.current_dialogue += 1
 
     @staticmethod
     def movement(tutorial):
-        tutorial.message.set_message(Message(["Now... let's start with moving, use:", "A  - to move left",
+        tutorial.cutscene = True
+        tutorial.message.set_message(Message(["If so, then let's get moving, use:", "A  - to move left",
                                              "W - to move up", "S - to move down", "D - to move right"], 1))
-        utils.message_break = True
+        tutorial.next_dialogue_in = 600
+        tutorial.current_dialogue += 1
+
+    @staticmethod
+    def shooting(tutorial):
+        tutorial.cutscene = True
+        tutorial.message.set_message(Message(["Now, let's learn how to shoot! Press:",
+                                              "LMB - primary fire, single bullet",
+                                              "RMB - secondary fire, multiple bullets on a short cooldown",
+                                              "Note, that there is an indicator on your crosshair that "
+                                              "tells you when you can shoot secondary fire again"], 2))
+        tutorial.next_dialogue_in = 600
+        tutorial.current_dialogue += 1
+
+    @staticmethod
+    def sprinting(tutorial):
+        tutorial.cutscene = True
+        tutorial.message.set_message(Message(["You might have noticed, that you move pretty slow",
+                                              "Especially when shooting... but there is a solution, just press",
+                                              "Shift - sprint, makes you move faster",
+                                              "Note, that you cannot shoot while sprinting"], 3))
+        tutorial.next_dialogue_in = 600
+        # tutorial.current_dialogue += 1
 
 
 class MessageBreak:
@@ -310,9 +367,9 @@ class MessageBreak:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    self.tutorial.cutscene = False
                     print("Hello world")
                     self.tutorial.stage = self.mess.return_stage
-                    utils.message_break = False
 
 
 class Message:

@@ -34,7 +34,6 @@ open_settings = False
 choose_game_mode = False
 gamemode = 0
 tutorial_running = False
-message_break = False
 
 
 def move(x, y):

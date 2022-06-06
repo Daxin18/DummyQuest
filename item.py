@@ -33,9 +33,14 @@ class Item:
             self.hover_counter += 1
         display.blit(self.texture, (self.x + display_scroll[0], self.y + display_scroll[1]))
         if self.player_in_range():
-            display.blit(font_items.render("Press [" + str(pygame.key.name(settings.pickup_key)) + "] to use",
-                                           True, (0, 0, 0)),
-                         (self.x + display_scroll[0] - 32, self.y + display_scroll[1] + 32))
+            if not utils.tutorial_running:
+                display.blit(font_items.render("Press [" + str(pygame.key.name(settings.pickup_key)) + "] to use",
+                                               True, (0, 0, 0)),
+                             (self.x + display_scroll[0] - 32, self.y + display_scroll[1] + 32))
+            else:
+                display.blit(font_items.render("Press [" + str(pygame.key.name(settings.pickup_key)) + "] to talk",
+                                               True, (0, 0, 0)),
+                             (self.x + display_scroll[0] - 32, self.y + display_scroll[1] + 32))
 
     def player_in_range(self):
         return math.sqrt((self.x + display_scroll[0] - player_x) ** 2 +

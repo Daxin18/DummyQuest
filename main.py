@@ -25,8 +25,6 @@ if __name__ == '__main__':
             settings_screen.main()
         while utils.tutorial_running:
             main_menu.tutorial.main()
-            while utils.message_break:
-                main_menu.tutorial.message.main()
             while utils.dead:
                 main_menu.death_screen.main()
             while utils.paused:
