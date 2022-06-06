@@ -318,22 +318,29 @@ class Tutorial:
     @staticmethod
     def intro(tutorial):
         tutorial.cutscene = True
-        tutorial.message.set_message(Message(["Hello there young traveller! Do you wanna play a game?"], 0))
+        tutorial.message.set_message(Message([" ",
+                                              " ",
+                                              "Hello there young traveller! Do you wanna play a game?"], 0))
         tutorial.next_dialogue_in = 120
         tutorial.current_dialogue += 1
 
     @staticmethod
     def movement(tutorial):
         tutorial.cutscene = True
-        tutorial.message.set_message(Message(["If so, then let's get moving, use:", "A  - to move left",
-                                             "W - to move up", "S - to move down", "D - to move right"], 1))
+        tutorial.message.set_message(Message(["If so, then let's get moving, use:",
+                                              "A  - to move left",
+                                              "W - to move up",
+                                              "S - to move down",
+                                              "D - to move right"], 1))
         tutorial.next_dialogue_in = 600
         tutorial.current_dialogue += 1
 
     @staticmethod
     def shooting1(tutorial):
         tutorial.cutscene = True
-        tutorial.message.set_message(Message(["Now, let's learn how to shoot! Press:",
+        tutorial.message.set_message(Message([" ",
+                                              "Now, let's learn how to shoot! Press:",
+                                              " ",
                                               "LMB - primary fire, single bullet"], 2))
         tutorial.next_dialogue_in = 600
         tutorial.current_dialogue += 1
@@ -352,7 +359,7 @@ class Tutorial:
     def sprinting(tutorial):
         tutorial.cutscene = True
         tutorial.message.set_message(Message(["You might have noticed, that you move pretty slow",
-                                              "Especially when shooting... but there is a solution, just press",
+                                              "Especially when shooting... but there is a solution, just press ",
                                               f"[{str.upper(pygame.key.name(settings.sprinting_button))}] "
                                               "to sprint and move faster",
                                               "Note, that you cannot shoot while sprinting"], 4))
@@ -362,7 +369,8 @@ class Tutorial:
     @staticmethod
     def dashing(tutorial):
         tutorial.cutscene = True
-        tutorial.message.set_message(Message(["I think we all know, you won't stop there...",
+        tutorial.message.set_message(Message([" ",
+                                              "I think we all know, you won't stop there...",
                                               f"Use [{str.upper(pygame.key.name(settings.dash_button))}] to dash!",
                                               "It makes you super fast and invincible for a short period"], 5))
         tutorial.next_dialogue_in = 600
@@ -398,17 +406,17 @@ class MessageBreak:
 class Message:
 
     # continue_mess = utils.font_items.render(f"Press [{pygame.key.name(settings.pickup_key)}] to continue", True, (255, 255, 255))
-    continue_mess = utils.font_items.render(f"Press [LMB] to continue", True, (255, 255, 255))
+    continue_mess = utils.font_dialogue.render(f"Press [LMB] to continue", True, (255, 255, 255))
 
     def __init__(self, text, return_stage):
         self.mess = []
         for text in text:
-            self.mess.append(utils.font_items.render(text, True, (255, 255, 255)))
+            self.mess.append(utils.font_dialogue.render(text, True, (255, 255, 255)))
         self.return_stage = return_stage
 
     def main(self):
         pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 580, 1200, 120))
         display.blit(dummy_text, (30, 500))
         for i in range(0, len(self.mess)):
-            display.blit(self.mess[i], (display.get_width()/2 - self.mess[i].get_width()/2, 590 + i*20))
+            display.blit(self.mess[i], (display.get_width()/2 - self.mess[i].get_width()/2, 590 + i*21))
         display.blit(Message.continue_mess, (1000, 675))

@@ -24,6 +24,7 @@ font_buttons = pygame.font.Font('dpcomic.ttf', 40)  # or 'prstart.ttf', still ca
 font_death = pygame.font.Font('dpcomic.ttf', 120)  # or 'prstart.ttf', still can't decide
 font_items = pygame.font.Font('freesansbold.ttf', 14)
 title_font = pygame.font.Font('StraightToHellSinnerBB.ttf', 180)
+font_dialogue = pygame.font.Font('freesansbold.ttf', 16)
 
 running = True
 game_running = False
