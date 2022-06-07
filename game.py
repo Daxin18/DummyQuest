@@ -78,11 +78,11 @@ class Game:
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
-            r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-            r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            while 550 < r_x < 650 and 250 < r_y < 350:
-                r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-                r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
+            r_x = random.randint(self.player.x - 3000, self.player.x + 3000)
+            r_y = random.randint(self.player.y - 3000, self.player.y + 3000)
+            while 450 < r_x < 750 and 150 < r_y < 450:
+                r_x = random.randint(self.player.x - 3000, self.player.x + 3000)
+                r_y = random.randint(self.player.y - 3000, self.player.y + 3000)
             r_w = random.randint(45, 70)
             r_h = random.randint(45, 70)
             self.solids.append(Rock(r_x, r_y, r_w, r_h))

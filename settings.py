@@ -69,7 +69,7 @@ enable_bullet_hit_boxes = False
 
 collision_tolerance = dash_speed + sprinting_boost + walking_speed + 10
 
-rock_number = 25
+rock_number = 150
 
 tmap_x_offset = 26
 tmap_y_offset = 28

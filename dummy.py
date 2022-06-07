@@ -20,7 +20,7 @@ Behaviour/ attack patterns:
 - attack pattern - none
 
 Special properties:
---> precence of spawners gives him invisible "protected"* status**
+--> presence of spawners gives him invisible "protected"* status**
 --> drops win_item upon death (in normal mode)
 --> invincible in tutorial
 

@@ -9,7 +9,6 @@ from slime import Slime
 from guardian import Guardian
 from player import Player
 from dummy import Dummy
-from rock import Rock
 from map import TileMap, SpriteSheet
 from item import Item
 from game import Game
@@ -63,7 +62,15 @@ class Tutorial:
         self.dialogue_items = []
         self.initialize_items()
 
+        def initial_condition(table):
+            return True
+        self.dialogue_condition = initial_condition
+        self.condition_table = [0, 0, 0, 0]
+
+        self.condition_update = initial_condition
+
     def main(self):
+
         self.time += 1
         if self.next_dialogue_in > 0:
             self.next_dialogue_in -= 1
@@ -77,9 +84,13 @@ class Tutorial:
         Game.render_stuff(self)
         self.handle_controls()
         self.render_hud()
+
         if self.cutscene:
             self.stage = 0
             self.message.main()
+        else:
+            self.condition_update(self.condition_table)
+
         pygame.display.update()
         # print("x: " + str(display_scroll[0]) + ", y: " + str(display_scroll[1]))  # to get coordinates for placement
 
@@ -96,11 +107,15 @@ class Tutorial:
                                         Tutorial.sprinting, Item.item_textures[5]))
         self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
                                         Tutorial.dashing, Item.item_textures[5]))
-        #self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
-        #                                Tutorial.fight, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.fight, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.go_explore, Item.item_textures[5]))
+        self.dialogue_items.append(Item(self.dummy.x - self.dummy.width / 2, self.dummy.y - self.dummy.height / 6,
+                                        Tutorial.end, Item.item_textures[5]))
 
     def spawn_dialogue_item(self):
-        if len(self.items) < 1:
+        if self.dialogue_condition(self.condition_table) and len(self.items) < 1:
             self.items.append(self.dialogue_items[self.current_dialogue])
 
     def check_for_end(self):
@@ -128,9 +143,13 @@ class Tutorial:
                         self.cutscene = False
                         self.stage = self.message.mess.return_stage
                 elif self.stage >= 2:
-                    if event.button == 1 :
+                    if event.button == 1:
                         self.player.primary_fire(self.mouse_x, self.mouse_y, self.player_bullets)
+                        if self.stage == 2:
+                            self.condition_table[0] += 1
                     if self.stage >= 3 and event.button == 3:
+                        if self.stage == 3 and self.player.shotgun_cooldown == 0:
+                            self.condition_table[0] += 1
                         self.player.shotgun(self.mouse_x, self.mouse_y, self.player_bullets)
 
         keys = pygame.key.get_pressed()
@@ -230,41 +249,99 @@ class Tutorial:
     @staticmethod
     def intro(tutorial):
         tutorial.cutscene = True
+        tutorial.player.hp = 10
+        tutorial.condition_table = [0, 0, 0, 0]
         tutorial.message.set_message(Message([" ",
                                               " ",
-                                              "Hello there young traveller! Do you wanna play a game?"], 0))
+                                              "Hello there! You look exhausted!",
+                                              "Better check your HP by pressing [Left_ctrl]"], 0))
+        def new_cond(table):
+            return table[0] >= 20
+
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LCTRL]:
+                table[0] += 1
+
+        tutorial.condition_update = new_update
+
         tutorial.next_dialogue_in = 120
         tutorial.current_dialogue += 1
 
     @staticmethod
     def movement(tutorial):
         tutorial.cutscene = True
-        tutorial.message.set_message(Message(["If so, then let's get moving, use:",
+        tutorial.condition_table = [0, 0, 0, 0]
+        tutorial.message.set_message(Message(["You don't look so well, let's get moving, use:",
                                               "A  - to move left",
                                               "W - to move up",
                                               "S - to move down",
                                               "D - to move right"], 1))
-        tutorial.next_dialogue_in = 600
+        def new_cond(table):
+            for x in table:
+                if x < 60:
+                    return False
+            return True
+
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_a]:
+                table[0] += 1
+            if keys[pygame.K_w]:
+                table[1] += 1
+            if keys[pygame.K_s]:
+                table[2] += 1
+            if keys[pygame.K_d]:
+                table[3] += 1
+
+        tutorial.condition_update = new_update
+        tutorial.next_dialogue_in = 120
         tutorial.current_dialogue += 1
 
     @staticmethod
     def shooting1(tutorial):
         tutorial.cutscene = True
+        tutorial.condition_table = [0, 0, 0, 0]
         tutorial.message.set_message(Message([" ",
                                               "Now, let's learn how to shoot! Press:",
                                               " ",
                                               "LMB - primary fire, single bullet"], 2))
-        tutorial.next_dialogue_in = 600
+        def new_cond(table):
+            return table[0] >= 20
+
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            return True
+
+        tutorial.condition_update = new_update
+
+
+        tutorial.next_dialogue_in = 120
         tutorial.current_dialogue += 1
 
     @staticmethod
     def shooting2(tutorial):
         tutorial.cutscene = True
+        tutorial.condition_table = [0, 0, 0, 0]
         tutorial.message.set_message(Message(["If you need more firepower you can use:",
                                               "RMB - secondary fire, multiple bullets on a short cooldown",
                                               "Note, that there is an indicator on your crosshair that "
                                               "tells you when you can shoot secondary fire again"], 3))
-        tutorial.next_dialogue_in = 600
+        def new_cond(table):
+            return table[0] >= 5
+
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            return True
+
+        tutorial.condition_update = new_update
+        tutorial.next_dialogue_in = 120
         tutorial.current_dialogue += 1
 
     @staticmethod
@@ -275,7 +352,21 @@ class Tutorial:
                                               f"[{str.upper(pygame.key.name(settings.sprinting_button))}] "
                                               "to sprint and move faster",
                                               "Note, that you cannot shoot while sprinting"], 4))
-        tutorial.next_dialogue_in = 600
+
+        tutorial.condition_table = [0, 0, 0, 0]
+        def new_cond(table):
+            return table[0] >= 120
+
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            keys = pygame.key.get_pressed()
+            if keys[settings.sprinting_button]:
+                table[0] += 1
+
+        tutorial.condition_update = new_update
+
+        tutorial.next_dialogue_in = 120
         tutorial.current_dialogue += 1
 
     @staticmethod
@@ -285,9 +376,88 @@ class Tutorial:
                                               "I think we all know, you won't stop there...",
                                               f"Use [{str.upper(pygame.key.name(settings.dash_button))}] to dash!",
                                               "It makes you super fast and invincible for a short period"], 5))
-        tutorial.next_dialogue_in = 600
-        # tutorial.current_dialogue += 1
+        tutorial.condition_table = [0, 0, 0, 0]
+        def new_cond(table):
+            return table[0] >= 120
 
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            keys = pygame.key.get_pressed()
+            if keys[settings.dash_button]:
+                table[0] += 1
+
+        tutorial.condition_update = new_update
+
+        tutorial.next_dialogue_in = 120
+        tutorial.current_dialogue += 1
+
+    @staticmethod
+    def fight(tutorial):
+        tutorial.cutscene = True
+        tutorial.condition_table = [0, 0, 0, 0]
+        tutorial.message.set_message(Message(["",
+                                              "Now, let's put your skills to a test and kill that Slime!",
+                                              "",
+                                              "Don't talk to me unless it's gone!"], 6))
+
+        def new_cond(table):
+            return table[0] == 1
+
+        tutorial.dialogue_condition = new_cond
+
+        tutorial.condition_update = tutorial.fight_update
+        tutorial.next_dialogue_in = 120
+        tutorial.current_dialogue += 1
+
+    def fight_update(self, table):
+        if not self.cutscene and len(self.enemies) < 2 and self.SCORE != 1:
+            self.enemies.append(Slime(self.player.x + 300 + display_scroll[0],
+                                      self.player.y + 10 + display_scroll[1]))
+        if self.SCORE == 1:
+            table[0] = 1
+
+    @staticmethod
+    def go_explore(tutorial):
+        tutorial.cutscene = True
+        tutorial.condition_table = [0, 0, 0, 0]
+        tutorial.message.set_message(Message(["Well done! In normal fight there's going to be way more of them though!",
+                                              "You gotta know your surroundings...",
+                                              "Go explore a little and talk to me when you're done",
+                                              "and we're gonna get you out of this boring tutorial!",
+                                              ""], 6))
+
+        def new_cond(table):
+            sum = 0
+            for x in table:
+                sum += x
+            return sum >= 600
+
+        tutorial.dialogue_condition = new_cond
+
+        def new_update(table):
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_a]:    # this time we return, so we really count the time spent walking
+                table[0] += 1
+                return True
+            if keys[pygame.K_w]:
+                table[1] += 1
+                return True
+            if keys[pygame.K_s]:
+                table[2] += 1
+                return True
+            if keys[pygame.K_d]:
+                table[3] += 1
+                return True
+            return True
+
+        tutorial.condition_update = new_update
+        tutorial.next_dialogue_in = 120
+        tutorial.current_dialogue += 1
+
+    @staticmethod
+    def end(tutorial):
+        utils.win = True
 
 class MessageBreak:
     def __init__(self, message, tutorial):
