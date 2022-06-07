@@ -13,6 +13,25 @@ still_animation = [pygame.image.load("textures\\Slime_still_0.xcf"), pygame.imag
                    pygame.image.load("textures\\Slime_still_2.xcf"), pygame.image.load("textures\\Slime_still_3.xcf"),
                    pygame.image.load("textures\\Slime_still_0.xcf")]
 
+"""
+Slime is the basic zombie-like type of an enemy
+
+To be included in:
+- enemies   (for attack, death, damage etc.)
+
+Behaviour/ attack patterns:
+- behaviour:
+    - if player is in range it tries to follow them (picking a random spot near them to go to), with a small chance to wander off
+    - otherwise it just randomly wanders around its location
+- attack pattern:
+    - if player is in range it shoots out 6 projectiles with 60 degree angle between them
+
+Special properties:
+--> upon death shoots out 12 bullets with 30 degree angle between them
+--> has a 1/[player.hp] chance to drop pizza upon death
+--> Slimes don't collide with solids so they can easily follow player around
+"""
+
 
 class Slime:
     def __init__(self, x, y):
@@ -85,73 +104,32 @@ class Slime:
 
     def attack(self, game):
         if self.attack_cooldown == 0 and self.player_in_range():
-            game.enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y, settings.slime_bullet_size,
-                                             settings.slime_bullet_TTL, settings.slime_bullet_dmg,
-                                             settings.slime_bullet_speed, slime_bullet_texture))
-            game.enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y, settings.slime_bullet_size,
-                                             settings.slime_bullet_TTL, settings.slime_bullet_dmg,
-                                             settings.slime_bullet_speed, slime_bullet_texture))
-            game.enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y + math.sqrt(3),
-                                             settings.slime_bullet_size,
-                                             settings.slime_bullet_TTL, settings.slime_bullet_dmg,
-                                             settings.slime_bullet_speed, slime_bullet_texture))
-            game.enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y + math.sqrt(3),
-                                             settings.slime_bullet_size,
-                                             settings.slime_bullet_TTL, settings.slime_bullet_dmg,
-                                             settings.slime_bullet_speed, slime_bullet_texture))
-            game.enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y - math.sqrt(3),
-                                             settings.slime_bullet_size,
-                                             settings.slime_bullet_TTL, settings.slime_bullet_dmg,
-                                             settings.slime_bullet_speed, slime_bullet_texture))
-            game.enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y - math.sqrt(3),
-                                             settings.slime_bullet_size,
-                                             settings.slime_bullet_TTL, settings.slime_bullet_dmg,
-                                             settings.slime_bullet_speed, slime_bullet_texture))
+            add_x = [-1, 1]
+            add_y = [0, math.sqrt(3), -math.sqrt(3)]
+            for x in add_x:
+                for y in add_y:
+                    game.enemy_bullets.append(Bullet(self.x, self.y, self.x + x, self.y + y,
+                                                     settings.slime_bullet_size, settings.slime_bullet_TTL,
+                                                     settings.slime_bullet_dmg, settings.slime_bullet_speed,
+                                                     slime_bullet_texture))
             self.attack_cooldown = settings.slime_attack_cooldown
         elif self.attack_cooldown != 0:
             self.attack_cooldown -= 1
 
     def die(self, game):
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x - math.sqrt(3), self.y + 1, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x + math.sqrt(3), self.y + 1, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x - math.sqrt(3), self.y - 1, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x + math.sqrt(3), self.y - 1, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y + math.sqrt(3), settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y + math.sqrt(3), settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x - 1, self.y - math.sqrt(3), settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x + 1, self.y - math.sqrt(3), settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x, self.y + 1, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
-        game.enemy_bullets.append(Bullet(self.x, self.y, self.x, self.y - 1, settings.slime_bullet_size,
-                                         settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
-                                         settings.slime_bullet_speed, slime_bullet_texture))
+        addition = [0, 1, -1, math.sqrt(3), -math.sqrt(3)]
+        for x in addition:
+            for y in addition:
+                if abs(x) != abs(y) and not\
+                        ((abs(x) == 0 and abs(y) == abs(math.sqrt(3)))
+                         or
+                         (abs(y) == 0 and abs(x) == abs(math.sqrt(3)))):
+                    game.enemy_bullets.append(Bullet(self.x, self.y, self.x + x, self.y + y, settings.slime_bullet_size,
+                                                     settings.slime_death_bullet_TTL, settings.slime_death_bullet_dmg,
+                                                     settings.slime_bullet_speed, slime_bullet_texture))
         game.enemies.remove(self)
         if random.randint(0, game.player.hp - 1) == 0:
             game.items.append(Item(self.x, self.y, Item.pizza, Item.item_textures[0]))
-
 
     def damage(self, damage):
         if not self.protected:

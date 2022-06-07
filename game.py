@@ -10,7 +10,6 @@ from guardian import Guardian
 from player import Player
 from dummy import Dummy
 from rock import Rock
-from tree import Tree
 from map import TileMap, SpriteSheet
 from spawner import Spawner
 from item import Item
@@ -27,7 +26,6 @@ class Game:
         self.enemies = []
         self.enemy_bullets = []
         self.solids = []  # aka things you can collide with
-        self.assets = []
         self.items = []
         self.time = 0
 
@@ -51,10 +49,10 @@ class Game:
     def main(self):
         self.time += 1
         self.check_for_end()
-        self.reset_parameters()
-        self.handle_collisions()
+        Game.reset_parameters(self)
+        Game.handle_collisions(self)
         self.tmap.draw_map()
-        self.render_stuff()
+        Game.render_stuff(self)
         self.handle_controls()
         self.render_hud()
         pygame.display.update()
@@ -70,8 +68,9 @@ class Game:
     def generate_items(self):
         for coordinates in settings.pizza_coordinates:
             self.items.append(Item(coordinates[0], coordinates[1], Item.pizza, Item.item_textures[0]))
-        for coordinates in settings.curse_coordinates:
-            self.items.append(Item(coordinates[0], coordinates[1], Item.cursed_boost, Item.item_textures[4]))
+        if utils.gamemode != 1:
+            for coordinates in settings.curse_coordinates:
+                self.items.append(Item(coordinates[0], coordinates[1], Item.cursed_boost, Item.item_textures[4]))
         for coordinates in settings.base_boost_coordinates:
             self.items.append(Item(coordinates[0], coordinates[1], Item.base_damage_boost, Item.item_textures[1]))
         for coordinates in settings.shotgun_boost_coordinates:
@@ -87,14 +86,6 @@ class Game:
             r_w = random.randint(45, 70)
             r_h = random.randint(45, 70)
             self.solids.append(Rock(r_x, r_y, r_w, r_h))
-        for i in range(settings.tree_number):
-            r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-            r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            while 550 < r_x < 650 and 250 < r_y < 350:
-                r_x = random.randint(self.player.x - 1000, self.player.x + 1000)
-                r_y = random.randint(self.player.y - 1000, self.player.y + 1000)
-            r_s = random.randint(25, 40)
-            self.assets.append(Tree(r_x, r_y, r_s))
 
     def check_for_end(self):
         if self.player.hp <= 0:
@@ -108,37 +99,37 @@ class Game:
                 utils.game_running = False
                 print("WTF")
 
-
-    def reset_parameters(self):
-        # display.fill((105, 105, 105))
-        display.fill((150, 15, 15))
+    @staticmethod
+    def reset_parameters(game_class):
+        display.fill((187, 63, 63))
         collision_table[0] = 0
         collision_table[1] = 0
-        for enemy in self.enemies:
+        for enemy in game_class.enemies:
             enemy.movement_blockade[0] = 0
             enemy.movement_blockade[1] = 0
 
         utils.clock.tick(60)
-        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
-        self.environment_speed = settings.walking_speed
+        game_class.mouse_x, game_class.mouse_y = pygame.mouse.get_pos()
+        game_class.environment_speed = settings.walking_speed
 
-    def handle_collisions(self):
-        for bullet in self.player_bullets:
-            if self.check_bullet_to_enemy(bullet):
-                self.check_bullet_to_solid(bullet)
+    @staticmethod
+    def handle_collisions(game_class):
+        for bullet in game_class.player_bullets:
+            if Game.check_bullet_to_enemy(game_class, bullet):
+                Game.check_bullet_to_solid(game_class, bullet)
 
-        for bullet in self.enemy_bullets:
-            if bullet.hit_box.colliderect(self.player.hit_box):
+        for bullet in game_class.enemy_bullets:
+            if bullet.hit_box.colliderect(game_class.player.hit_box):
                 try:  # if a bullet hits 2 things at once (rare occurance) it will throw ValueError
-                    if bullet.damage(self.player):
-                        self.enemy_bullets.remove(bullet)
+                    if bullet.damage(game_class.player):
+                        game_class.enemy_bullets.remove(bullet)
                 except ValueError:
-                    0
-            self.check_enemy_bullet_to_solid(bullet)
+                    pass
+            Game.check_enemy_bullet_to_solid(game_class, bullet)
 
-        for solid in self.solids:
-            utils.check_player_collision(solid, self.player)
-            for enemy in self.enemies:
+        for solid in game_class.solids:
+            utils.check_player_collision(solid, game_class.player)
+            for enemy in game_class.enemies:
                 utils.check_entity_collision(solid, enemy)
 
     def handle_controls(self):
@@ -216,32 +207,30 @@ class Game:
                 settings.enable_hit_boxes = not settings.enable_hit_boxes
                 self.hit_box_cd = 20
 
-    def render_stuff(self):
-        for solid in self.solids:
+    @staticmethod
+    def render_stuff(game_class):
+        for solid in game_class.solids:
             solid.render_solid()
-        # assets
-        for asset in self.assets:
-            asset.render_asset()
-        self.player.main(self.mouse_x, self.mouse_y)
-        for enemy in self.enemies:
+        game_class.player.main(game_class.mouse_x, game_class.mouse_y)
+        for enemy in game_class.enemies:
             enemy.main()
-            enemy.attack(self)
+            enemy.attack(game_class)
             if enemy.hp <= 0:
-                enemy.die(self)
-                self.SCORE += 1
+                enemy.die(game_class)
+                game_class.SCORE += 1
         # bullets
-        for bullet in self.player_bullets:
+        for bullet in game_class.player_bullets:
             if bullet.TTL != 0:
                 bullet.main()
             else:
-                self.player_bullets.remove(bullet)
-        for bullet in self.enemy_bullets:
+                game_class.player_bullets.remove(bullet)
+        for bullet in game_class.enemy_bullets:
             if bullet.TTL != 0:
                 bullet.main()
             else:
-                self.enemy_bullets.remove(bullet)
+                game_class.enemy_bullets.remove(bullet)
         # items
-        for item in self.items:
+        for item in game_class.items:
             item.main()
 
     def render_hud(self):
@@ -274,33 +263,36 @@ class Game:
         tilemap = TileMap(game_tmap_path, sheet)
         return tilemap
 
-    def check_bullet_to_enemy(self, bullet):
-        for enemy in self.enemies:
+    @staticmethod
+    def check_bullet_to_enemy(game, bullet):
+        for enemy in game.enemies:
             if bullet.hit_box.colliderect(enemy.hit_box):
                 try:
                     if bullet.damage(enemy):
-                        self.player_bullets.remove(bullet)
+                        game.player_bullets.remove(bullet)
                         return False
                 except ValueError:
-                    0
+                    pass
         return True
 
-    def check_bullet_to_solid(self, bullet):
-        for solid in self.solids:
-            if bullet.hit_box.colliderect(solid.hit_box) and not self.enemies.__contains__(solid):
+    @staticmethod
+    def check_bullet_to_solid(game, bullet):
+        for solid in game.solids:
+            if bullet.hit_box.colliderect(solid.hit_box) and not game.enemies.__contains__(solid):
                 try:
                     if bullet.damage(solid):
-                        self.player_bullets.remove(bullet)
+                        game.player_bullets.remove(bullet)
                         break
                 except ValueError:
-                    0
+                    pass
 
-    def check_enemy_bullet_to_solid(self, bullet):
-        for solid in self.solids:
-            if bullet.hit_box.colliderect(solid.hit_box) and not self.enemies.__contains__(solid):
+    @staticmethod
+    def check_enemy_bullet_to_solid(game, bullet):
+        for solid in game.solids:
+            if bullet.hit_box.colliderect(solid.hit_box) and not game.enemies.__contains__(solid):
                 try:
                     if bullet.damage(solid):
-                        self.enemy_bullets.remove(bullet)
+                        game.enemy_bullets.remove(bullet)
                         break
                 except ValueError:
-                    0
+                    pass

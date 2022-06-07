@@ -12,6 +12,7 @@ from dummy import Dummy
 from rock import Rock
 from map import TileMap, SpriteSheet
 from item import Item
+from game import Game
 
 dummy_text = pygame.image.load("textures\\Dummy_dialogue.xcf")
 
@@ -70,10 +71,10 @@ class Tutorial:
             self.spawn_dialogue_item()
 
         self.check_for_end()
-        self.reset_parameters()
-        self.handle_collisions()
+        Game.reset_parameters(self)
+        Game.handle_collisions(self)
         self.tmap.draw_map()
-        self.render_stuff()
+        Game.render_stuff(self)
         self.handle_controls()
         self.render_hud()
         if self.cutscene:
@@ -113,39 +114,6 @@ class Tutorial:
                 utils.win = True
                 utils.game_running = False
                 print("WTF")
-
-
-    def reset_parameters(self):
-        # display.fill((105, 105, 105))
-        display.fill((150, 15, 15))
-        collision_table[0] = 0
-        collision_table[1] = 0
-        for enemy in self.enemies:
-            enemy.movement_blockade[0] = 0
-            enemy.movement_blockade[1] = 0
-
-        utils.clock.tick(60)
-        self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
-        self.environment_speed = settings.walking_speed
-
-    def handle_collisions(self):
-        for bullet in self.player_bullets:
-            if self.check_bullet_to_enemy(bullet):
-                self.check_bullet_to_solid(bullet)
-
-        for bullet in self.enemy_bullets:
-            if bullet.hit_box.colliderect(self.player.hit_box):
-                try:  # if a bullet hits 2 things at once (rare occurance) it will throw ValueError
-                    if bullet.damage(self.player):
-                        self.enemy_bullets.remove(bullet)
-                except ValueError:
-                    0
-            self.check_enemy_bullet_to_solid(bullet)
-
-        for solid in self.solids:
-            utils.check_player_collision(solid, self.player)
-            for enemy in self.enemies:
-                utils.check_entity_collision(solid, enemy)
 
     def handle_controls(self):
         # controls
@@ -227,31 +195,6 @@ class Tutorial:
                 settings.enable_hit_boxes = not settings.enable_hit_boxes
                 self.hit_box_cd = 20
 
-    def render_stuff(self):
-        for solid in self.solids:
-            solid.render_solid()
-        self.player.main(self.mouse_x, self.mouse_y)
-        for enemy in self.enemies:
-            enemy.main()
-            enemy.attack(self)
-            if enemy.hp <= 0:
-                enemy.die(self)
-                self.SCORE += 1
-        # bullets
-        for bullet in self.player_bullets:
-            if bullet.TTL != 0:
-                bullet.main()
-            else:
-                self.player_bullets.remove(bullet)
-        for bullet in self.enemy_bullets:
-            if bullet.TTL != 0:
-                bullet.main()
-            else:
-                self.enemy_bullets.remove(bullet)
-        # items
-        for item in self.items:
-            item.main()
-
     def render_hud(self):
         if self.stage >= 1:
             pygame.draw.rect(display, (255, 255, 255), (self.mouse_x - 1, self.mouse_y + settings.crosshair_size + 5, 2, 5))
@@ -283,37 +226,6 @@ class Tutorial:
         sheet = SpriteSheet('textures\\tiles\\spritesheet.png')
         tilemap = TileMap(tutorial_tmap_path, sheet)
         return tilemap
-
-    def check_bullet_to_enemy(self, bullet):
-        for enemy in self.enemies:
-            if bullet.hit_box.colliderect(enemy.hit_box):
-                try:
-                    if bullet.damage(enemy):
-                        self.player_bullets.remove(bullet)
-                        return False
-                except ValueError:
-                    0
-        return True
-
-    def check_bullet_to_solid(self, bullet):
-        for solid in self.solids:
-            if bullet.hit_box.colliderect(solid.hit_box) and not self.enemies.__contains__(solid):
-                try:
-                    if bullet.damage(solid):
-                        self.player_bullets.remove(bullet)
-                        break
-                except ValueError:
-                    0
-
-    def check_enemy_bullet_to_solid(self, bullet):
-        for solid in self.solids:
-            if bullet.hit_box.colliderect(solid.hit_box) and not self.enemies.__contains__(solid):
-                try:
-                    if bullet.damage(solid):
-                        self.enemy_bullets.remove(bullet)
-                        break
-                except ValueError:
-                    0
 
     @staticmethod
     def intro(tutorial):

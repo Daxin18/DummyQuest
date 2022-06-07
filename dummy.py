@@ -8,6 +8,26 @@ from item import Item
 
 dummy_texture = pygame.image.load("textures\\Dummy.xcf")
 
+"""
+Dummy is the first created enemy, and 'BOSS' of the game
+
+To be included in:
+- enemies   (for attack, death, damage etc.)
+- solids    (for collision)
+
+Behaviour/ attack patterns:
+- behaviour - stands in place and watches player
+- attack pattern - none
+
+Special properties:
+--> precence of spawners gives him invisible "protected"* status**
+--> drops win_item upon death (in normal mode)
+--> invincible in tutorial
+
+* "protected" status - grants an enemy invincibility, while also making them stop all the bullets
+** invisible - there is no visual indicator that enemy is protected
+"""
+
 
 class Dummy:
     def __init__(self, x, y, width, height):
@@ -40,13 +60,10 @@ class Dummy:
                       self.y - dummy_copy.get_height()/2 + display_scroll[1]))
 
     def attack(self, game):
-        self.hp = self.hp
-        # print(enemy_bullets)
-        # print("Dummy attacked!")
+        pass
 
     def die(self, game):
         self.hp = self.hp
-        print("Dummy died!")
         game.enemies.remove(self)
         game.solids.remove(self)
         if utils.gamemode != 1:
@@ -57,5 +74,5 @@ class Dummy:
             give_damage(self, damage)
         return True
 
-    def render_solid(self): # needs to be implemented to enable collision, subject to change
-        self.hp = self.hp
+    def render_solid(self): # needs to be implemented to enable collision, subject to change(?)
+        pass

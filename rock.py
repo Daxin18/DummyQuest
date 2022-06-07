@@ -5,6 +5,21 @@ from utils import display, display_scroll
 
 texture = pygame.image.load("textures\\Rock.xcf")
 
+"""
+Rock is the basic solid
+
+To be included in:
+- solids    (for collision)
+
+Behaviour/ attack patterns:
+- behaviour - none
+- attack pattern - none
+
+Special properties:
+--> stops the player and few entities movement
+--> collision can be skipped if player is dashing
+"""
+
 
 class Rock:
     def __init__(self, x, y, width, height):

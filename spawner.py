@@ -10,6 +10,27 @@ from item import Item
 
 spawner_texture = pygame.image.load("textures\\Spawner.xcf")
 
+"""
+Spawner is the enemy that summons new enemies, has a lot of health
+
+To be included in:
+- enemies   (for attack, death, damage etc.)
+- solids    (for collision)
+
+Behaviour/ attack patterns:
+- behaviour - stands in one place
+- attack pattern - spawns 3 Slimes near it, in the direction of a player every few seconds
+
+Special properties:
+--> always spawns in with 4 Guardians, giving it "protected"* status
+--> drops one pizza, base_damage_boost and shotgun_damage_boost + spawns 10 Slimes upon death
+--> when HP falls below certain threshhold (depending on difficulty level) it starts spawning enemies significantly faster
+--> gives Dummy invisible** "protected" status when present
+
+* "protected" status - grants an enemy invincibility, while also making them stop all the bullets
+** invisible - there is no visual indicator that enemy is protected
+"""
+
 
 class Spawner:
     def __init__(self, x, y, width, height, game):
@@ -50,6 +71,7 @@ class Spawner:
             pygame.draw.circle(display, (255, 0, 0), (self.x, self.y), 15)
 
     def attack(self, game):
+        game.enemies[0].protected = True    # Dummy is always the enemy with the index of 0
         if self.attack_cd == 0 and self.player_in_range():
             self.spawn_slimes(game, settings.spawner_spawn_amount)
             if self.enraged:
@@ -65,6 +87,7 @@ class Spawner:
                    <= settings.spawner_sight_range
 
     def die(self, game):
+        game.enemies[0].protected = False   # Dummy is always the enemy with the index of 0
         self.spawn_slimes(game, settings.spawner_death_spawn_amount)
         game.enemies.remove(self)
         game.solids.remove(self)

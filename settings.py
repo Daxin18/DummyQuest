@@ -1,6 +1,6 @@
 import pygame
 
-dummy_hp = 10000
+dummy_hp = 100
 
 player_hp = 100
 player_health_cap = 1000  # maximum health a player can have
@@ -19,7 +19,7 @@ crosshair_size = 3
 crosshair_dot = True
 dev_keys = True
 bullet_speed = 10
-bullet_size = 5
+bullet_size = 6
 bullet_TTL = 90
 base_bullet_damage = 2
 damage_flick = 5
@@ -27,7 +27,7 @@ damage_flick_cooldown = 5
 shotgun_cooldown = 60
 shotgun_pellets = 12
 shotgun_pellet_damage = 1
-shotgun_pellet_size = 2
+shotgun_pellet_size = 4
 shotgun_pellet_speed = 10
 shotgun_spread = 6  # the higher the value, the more accurate the shotgun is
 base_bonus_damage = 0
@@ -44,7 +44,7 @@ slime_bullet_size = 10
 slime_bullet_TTL = 90
 slime_death_bullet_TTL = 180
 slime_bullet_dmg = 1
-slime_death_bullet_dmg = 3
+slime_death_bullet_dmg = 2
 slime_hp = 30
 slime_sight_range = 600
 spawn_cd = 10
@@ -69,7 +69,6 @@ enable_bullet_hit_boxes = False
 
 collision_tolerance = dash_speed + sprinting_boost + walking_speed + 10
 
-tree_number = 40
 rock_number = 25
 
 tmap_x_offset = 26

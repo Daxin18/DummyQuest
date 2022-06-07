@@ -17,6 +17,29 @@ buried = [pygame.image.load("textures\\Guardian_buried_0.xcf"),
 shield = pygame.image.load("textures\\Guardian_protection.xcf")
 bullet = pygame.image.load("textures\\Guardian_bullet.xcf")
 
+"""
+Guardian is the annoying type of an enemy
+
+To be included in:
+- enemies   (for attack, death, damage etc.)
+
+Behaviour/ attack patterns:
+- behaviour:
+    - it tries to stay near the enemy it's protecting, picking random spots around it to move to (can move only when buried)
+- attack pattern:
+    - when nor buried it waits a little bit and then fires a big, fast, powerful projectile towards the player
+
+Special properties:
+--> they give "protected"* status to the enemy they are guarding (as long as they are alive)
+--> invincible when buried
+--> has 2 states:
+    --> buried - they can move, are invincible, but lack the ability to shoot
+    --> not buried - they stand in one place, charge a shot and fire, attack recharges while they are buried
+--> their movement can be stopped by solids, unlike Slimes
+
+* "protected" status - grants an enemy invincibility, while also making them stop all the bullets
+"""
+
 
 class Guardian:
     def __init__(self, x, y, guarding):

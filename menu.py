@@ -8,6 +8,8 @@ from game import Game
 from tutorial import Tutorial
 
 menuu = pygame.image.load("textures\\menuu.jpg")
+gamemode_choice_texture = pygame.image.load("textures\\gamemode_choice.jpg")
+gamemode_choice_addition = pygame.image.load("textures\\win_item.xcf")
 
 
 class Menu:
@@ -336,7 +338,8 @@ class Choice:
                 sys.exit()
 
     def manage_display(self):
-        display.fill((39, 142, 183))
+        display.blit(gamemode_choice_texture, (0, 0))
+        display.blit(pygame.transform.scale(gamemode_choice_addition, (64, 64)), (575, 340))
         message = utils.font_death.render("Choose game mode", True, (138, 238, 255))
         display.blit(message, (180, 100))
         for button in self.buttons:
@@ -345,8 +348,8 @@ class Choice:
 
     def normal(self):
         pygame.mouse.set_visible(False)
-        self.menu.game = Game()
         utils.gamemode = 0
+        self.menu.game = Game()
         utils.game_running = True
         utils.choose_game_mode = False
 
@@ -359,8 +362,8 @@ class Choice:
 
     def pizza(self):
         pygame.mouse.set_visible(False)
-        self.menu.game = Game()
         utils.gamemode = 1
+        self.menu.game = Game()
         utils.game_running = True
         utils.choose_game_mode = False
 

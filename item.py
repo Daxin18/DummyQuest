@@ -8,7 +8,7 @@ from utils import display, display_scroll, player_x, player_y, font_items
 
 class Item:
     item_textures = [pygame.image.load("textures\\pizza.xcf"), pygame.image.load("textures\\bullet_boost.xcf"),
-                     pygame.image.load("textures\\shotgun_boost.xcf"), pygame.image.load("textures\\Player_bullet.xcf"),
+                     pygame.image.load("textures\\shotgun_boost.xcf"), pygame.image.load("textures\\win_item.xcf"),
                      pygame.image.load("textures\\cursed_boost.xcf"), pygame.image.load("textures\\Blank.xcf")]
 
     def __init__(self, x, y, function, texture):
