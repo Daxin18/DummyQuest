@@ -10,7 +10,7 @@ tilenames = ['base.png', 'wheat.png', 'flower1.png', 'flower2.png', 'buried_curs
              'red_candle.png', 'blue_candle.png', 'plate.png', 'road_E.png', 'road_S.png',
              'road_W.png', 'road_N.png', 'road_full_1.png', 'road_full_2.png', 'road_NW.png',
              'road_NE.png', 'road_SE.png', 'road_SW.png', 'face.png', 'pumpkin.png',
-             'fountain.png', 'grass.png']
+             'fountain.png', 'grass.png', 'bush.png', 'crack.png', 'leaf.png']
 
 
 class SpriteSheet:
