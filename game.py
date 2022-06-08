@@ -78,11 +78,11 @@ class Game:
 
     def generate_random_terrain(self):
         for i in range(settings.rock_number):
-            r_x = random.randint(self.player.x - 2800, self.player.x + 2800)
-            r_y = random.randint(self.player.y - 2800, self.player.y + 2800)
+            r_x = random.randint(self.player.x - 2700, self.player.x + 2700)
+            r_y = random.randint(self.player.y - 2700, self.player.y + 2700)
             while 451 < r_x < 750 and 150 < r_y < 449:
-                r_x = random.randint(self.player.x - 2800, self.player.x + 2800)
-                r_y = random.randint(self.player.y - 2800, self.player.y + 2800)
+                r_x = random.randint(self.player.x - 2700, self.player.x + 2700)
+                r_y = random.randint(self.player.y - 2700, self.player.y + 2700)
             r_w = random.randint(45, 70)
             r_h = random.randint(45, 70)
             self.solids.append(Rock(r_x, r_y, r_w, r_h))
@@ -251,7 +251,7 @@ class Game:
             pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 8,
                                                     self.mouse_y + settings.crosshair_size + 5, 3, 4))
 
-        display.blit(utils.font.render("SCORE: " + str(self.SCORE), True, (0, 0, 255)), (display.get_width() / 2 - 70, 20))
+        display.blit(utils.font.render("KILLS: " + str(self.SCORE), True, (0, 0, 255)), (display.get_width() / 2 - 70, 20))
         display.blit(utils.font.render("TIME: " + str(int(self.time/3600)) + "min " + str(int((self.time/60)%60)) + "s", True, (0, 0, 255)),
                      (10, 20))
         display.blit(utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),

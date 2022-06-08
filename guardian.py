@@ -59,7 +59,7 @@ class Guardian:
         self.buried = False
         self.vel_x = 0
         self.vel_y = 0
-        self.texture = pygame.image.load("textures\\drawing.png")
+        self.texture = buried[0]
         self.guarding.protected = True
         self.animation_counter = 0
         self.attacked = False

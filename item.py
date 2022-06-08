@@ -73,5 +73,3 @@ class Item:
         settings.player_health_cap = 16
         game.player.base_bonus_damage += 5
         game.player.shotgun_bonus_damage += 4
-
-

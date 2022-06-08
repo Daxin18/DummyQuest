@@ -132,7 +132,7 @@ class Player:
         if self.dash_cooldown != 0:
             cd = font.render("Dash: on cooldown (" + str(round(self.dash_cooldown/60, 1)) + "s)", True, (255, 0, 0))
         else:
-            cd = font.render("Dash: Ready", True, (0, 255, 0))
+            cd = font.render("Dash: Ready", True, (50, 120, 255))
         display.blit(cd, (5, display.get_height() - 35))
 
     def distance_to_crosshair(self, mouse_x, mouse_y):

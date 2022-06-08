@@ -8,7 +8,7 @@ from slime import Slime
 from guardian import Guardian
 from item import Item
 
-spawner_texture = pygame.image.load("textures\\Spawner.xcf")
+spawner_texture = [pygame.image.load("textures\\Spawner.xcf"), pygame.image.load("textures\\Spawner_enraged.xcf")]
 
 """
 Spawner is the enemy that summons new enemies, has a lot of health
@@ -63,12 +63,13 @@ class Spawner:
         self.render()
 
     def render(self):
-        texture_copy = pygame.transform.scale(spawner_texture, (self.height, self.width))
+        if self.enraged:
+            texture_copy = pygame.transform.scale(spawner_texture[1], (self.height, self.width))
+        else:
+            texture_copy = pygame.transform.scale(spawner_texture[0], (self.height, self.width))
         display.blit(texture_copy,
                      (self.x + display_scroll[0] - self.width/2,
                       self.y + display_scroll[1] - self.height/2))
-        if self.enraged:
-            pygame.draw.circle(display, (255, 0, 0), (self.x, self.y), 15)
 
     def attack(self, game):
         game.enemies[0].protected = True    # Dummy is always the enemy with the index of 0

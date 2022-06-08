@@ -7,9 +7,11 @@ from settings import damage_flick, damage_flick_cooldown, collision_tolerance
 pygame.init()
 
 game_tmap_path = "maps\\map_1.csv"
-tutorial_tmap_path = "maps\\tutorial.csv"
+tutorial_tmap_path = "maps\\map_1.csv"
 
 display = pygame.display.set_mode((1200, 700))
+pygame.display.set_caption("Dummy Quest")
+pygame.display.set_icon(pygame.image.load("textures\\Dummy_face.jpg"))
 display_scroll = [0, 0]
 collision_table = [0, 0]    # [collision on x, collision on y]
 
@@ -20,8 +22,8 @@ clock = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 32)
 font_health = pygame.font.Font('freesansbold.ttf', 12)
 font_enemies = pygame.font.Font('freesansbold.ttf', 20)
-font_buttons = pygame.font.Font('dpcomic.ttf', 40)  # or 'prstart.ttf', still can't decide
-font_death = pygame.font.Font('dpcomic.ttf', 120)  # or 'prstart.ttf', still can't decide
+font_buttons = pygame.font.Font('dpcomic.ttf', 40)
+font_death = pygame.font.Font('dpcomic.ttf', 120)
 font_items = pygame.font.Font('freesansbold.ttf', 14)
 title_font = pygame.font.Font('StraightToHellSinnerBB.ttf', 180)
 font_dialogue = pygame.font.Font('freesansbold.ttf', 16)
@@ -168,4 +170,3 @@ def set_difficulty():
         settings.spawner_enrage_hp_ratio = 0.6
         settings.base_bonus_damage = 0
         settings.base_bonus_shotgun_damage = 0
-
