@@ -162,6 +162,8 @@ class Tutorial:
         if self.stage >= 5 and keys[settings.dash_button] and self.player.dash_cooldown == 0:
             self.environment_speed += settings.dash_speed
             self.player.dash(keys)
+            if self.stage == 5:
+                self.condition_table[0] += 1
         if not keys[settings.dash_button]:
             self.player.reset_dash()
         if self.stage >= 4 and keys[settings.sprinting_button]:
@@ -232,12 +234,14 @@ class Tutorial:
                                                         self.mouse_y + settings.crosshair_size + 5, 3, 4))
                 pygame.draw.rect(display, (0, 0, 255), (self.mouse_x + settings.crosshair_size + 8,
                                                         self.mouse_y + settings.crosshair_size + 5, 3, 4))
-
-        display.blit(utils.font.render("SCORE: " + str(self.SCORE), True, (0, 0, 255)), (display.get_width() / 2 - 70, 20))
+        if self.stage >= 6:
+            display.blit(utils.font.render("Kills: " + str(self.SCORE), True, (0, 0, 255)),
+                         (display.get_width() / 2 - 70, 20))
+            display.blit(
+                utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),
+                (display.get_width() - 190, 10))
         display.blit(utils.font.render("TIME: " + str(int(self.time/3600)) + "min " + str(int((self.time/60)%60)) + "s", True, (0, 0, 255)),
                      (10, 20))
-        display.blit(utils.font_enemies.render("Enemies alive: " + str(len(self.enemies) - 1), True, (255, 255, 255)),
-                     (display.get_width() - 190, 10))
         if self.stage >= 4:
             self.player.show_dash_cooldown()
 
@@ -256,18 +260,24 @@ class Tutorial:
                                               "Hello there! You look exhausted!",
                                               "Better check your HP by pressing [Left_ctrl]"], 0))
         def new_cond(table):
-            return table[0] >= 20
+            return table[0] >= 60
 
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
+            if table[0] < 60:
+                mess = utils.font_enemies.render(f"HP viewed for: {table[0]}/60", True, (255, 255, 255))
+            else:
+                mess = utils.font_enemies.render(f"HP viewed for: {table[0]}/60", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 660, 1200, 40))
+            display.blit(mess, (500, 670))
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LCTRL]:
                 table[0] += 1
 
         tutorial.condition_update = new_update
 
-        tutorial.next_dialogue_in = 120
+        tutorial.next_dialogue_in = 60
         tutorial.current_dialogue += 1
 
     @staticmethod
@@ -288,6 +298,27 @@ class Tutorial:
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
+            if table[0] < 60:
+                A = utils.font_enemies.render(f"Left: {table[0]}/60", True, (255, 255, 255))
+            else:
+                A = utils.font_enemies.render(f"Left: {table[0]}/60", True, (30, 255, 30))
+            if table[1] < 60:
+                W = utils.font_enemies.render(f"Top: {table[1]}/60", True, (255, 255, 255))
+            else:
+                W = utils.font_enemies.render(f"Top: {table[1]}/60", True, (30, 255, 30))
+            if table[2] < 60:
+                S = utils.font_enemies.render(f"Down: {table[2]}/60", True, (255, 255, 255))
+            else:
+                S = utils.font_enemies.render(f"Down: {table[2]}/60", True, (30, 255, 30))
+            if table[3] < 60:
+                D = utils.font_enemies.render(f"Right: {table[3]}/60", True, (255, 255, 255))
+            else:
+                D = utils.font_enemies.render(f"Right: {table[3]}/60", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 660, 1200, 40))
+            display.blit(A, (250, 670))
+            display.blit(W, (450, 670))
+            display.blit(S, (650, 670))
+            display.blit(D, (850, 670))
             keys = pygame.key.get_pressed()
             if keys[pygame.K_a]:
                 table[0] += 1
@@ -316,7 +347,12 @@ class Tutorial:
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
-            return True
+            if table[0] < 20:
+                mess = utils.font_enemies.render(f"Shots fired: {table[0]}/20", True, (255, 255, 255))
+            else:
+                mess = utils.font_enemies.render(f"Shots fired: {table[0]}/20", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 660, 1200, 40))
+            display.blit(mess, (500, 670))
 
         tutorial.condition_update = new_update
 
@@ -338,7 +374,12 @@ class Tutorial:
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
-            return True
+            if table[0] < 5:
+                mess = utils.font_enemies.render(f"Secondary shots fired: {table[0]}/5", True, (255, 255, 255))
+            else:
+                mess = utils.font_enemies.render(f"Secondary shots fired: {table[0]}/5", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 660, 1200, 40))
+            display.blit(mess, (450, 670))
 
         tutorial.condition_update = new_update
         tutorial.next_dialogue_in = 120
@@ -360,6 +401,12 @@ class Tutorial:
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
+            if table[0] < 120:
+                mess = utils.font_enemies.render(f"Sprinted for: {table[0]}/120", True, (255, 255, 255))
+            else:
+                mess = utils.font_enemies.render(f"Sprinted for: {table[0]}/120", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(0, 660, 1200, 40))
+            display.blit(mess, (450, 670))
             keys = pygame.key.get_pressed()
             if keys[settings.sprinting_button]:
                 table[0] += 1
@@ -378,14 +425,17 @@ class Tutorial:
                                               "It makes you super fast and invincible for a short period"], 5))
         tutorial.condition_table = [0, 0, 0, 0]
         def new_cond(table):
-            return table[0] >= 120
+            return table[0] >= 50
 
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
-            keys = pygame.key.get_pressed()
-            if keys[settings.dash_button]:
-                table[0] += 1
+            if table[0] < 50:
+                mess = utils.font_enemies.render(f"Dashes: {table[0]//10}/5", True, (255, 255, 255))
+            else:
+                mess = utils.font_enemies.render(f"Dashes: {table[0]//10}/5", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(1000, 660, 200, 40))
+            display.blit(mess, (1050, 670))
 
         tutorial.condition_update = new_update
 
@@ -421,7 +471,7 @@ class Tutorial:
     def go_explore(tutorial):
         tutorial.cutscene = True
         tutorial.condition_table = [0, 0, 0, 0]
-        tutorial.message.set_message(Message(["Well done! In normal fight there's going to be way more of them though!",
+        tutorial.message.set_message(Message(["Well done! In a normal fight there's going to be way more of them though!",
                                               "You gotta know your surroundings...",
                                               "Go explore a little and talk to me when you're done",
                                               "and we're gonna get you out of this boring tutorial!",
@@ -436,8 +486,15 @@ class Tutorial:
         tutorial.dialogue_condition = new_cond
 
         def new_update(table):
+            tmp = table[0] + table[1] + table[2] + table[3]
+            if tmp < 600:
+                mess = utils.font_enemies.render(f"Time walking: {tmp}/600", True, (255, 255, 255))
+            else:
+                mess = utils.font_enemies.render(f"Time walking: {tmp}/600", True, (30, 255, 30))
+            pygame.draw.rect(display, (50, 50, 50), pygame.Rect(900, 660, 300, 40))
+            display.blit(mess, (950, 670))
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_a]:    # this time we return, so we really count the time spent walking
+            if keys[pygame.K_a]:    # this time we return so count time spent walking
                 table[0] += 1
                 return True
             if keys[pygame.K_w]:

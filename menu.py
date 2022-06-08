@@ -323,7 +323,7 @@ class Choice:
 
     def initialize_buttons(self):
         self.buttons.append(Button(self, 600, 300, 400, 80, "Normal", self.normal))
-        self.buttons.append(Button(self, 300, 450, 400, 80, "Tutorial (W.I.P.)", self.tutorial))
+        self.buttons.append(Button(self, 300, 450, 400, 80, "Tutorial", self.tutorial))
         self.buttons.append(Button(self, 900, 450, 400, 80, "Pizza hunt", self.pizza))
         self.buttons.append(Button(self, 600, 600, 400, 80, "<-- Back", self.go_back))
 
