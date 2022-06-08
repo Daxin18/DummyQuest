@@ -254,6 +254,7 @@ class Settings:
     def initialize_buttons(self):
         self.buttons.append(Button(self, 600, 300, 400, 80, "Difficulty level", Settings.toggle_difficulty))
         self.buttons.append(Button(self, 600, 400, 400, 80, "Crosshair dot", Settings.toggle_crosshair))
+        self.buttons.append(Button(self, 600, 500, 400, 80, "Special buttons", Settings.toggle_dev_keys))
         self.buttons.append(Button(self, 600, 600, 400, 80, "<-- Back", Settings.go_back))
 
     def handle_clicks(self):
@@ -285,6 +286,10 @@ class Settings:
         settings.crosshair_dot = not settings.crosshair_dot
 
     @staticmethod
+    def toggle_dev_keys():
+        settings.dev_keys = not settings.dev_keys
+
+    @staticmethod
     def toggle_difficulty():
         settings.difficulty_level += 1
         if settings.difficulty_level > 2:
@@ -297,6 +302,11 @@ class Settings:
             display.blit(utils.font_buttons.render("ON", True, (0, 255, 0)), (820, 380))
         else:
             display.blit(utils.font_buttons.render("OFF", True, (255, 0, 0)), (820, 380))
+
+        if settings.dev_keys:
+            display.blit(utils.font_buttons.render("ON", True, (0, 255, 0)), (820, 480))
+        else:
+            display.blit(utils.font_buttons.render("OFF", True, (255, 0, 0)), (820, 480))
 
         if settings.difficulty_level == -1:
             display.blit(utils.font_buttons.render("BABY", True, (0, 255, 0)), (820, 280))
