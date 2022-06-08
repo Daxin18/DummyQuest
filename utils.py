@@ -11,7 +11,7 @@ tutorial_tmap_path = "maps\\map_1.csv"
 
 display = pygame.display.set_mode((1200, 700))
 pygame.display.set_caption("Dummy Quest")
-pygame.display.set_icon(pygame.image.load("textures\\Dummy_face.jpg"))
+pygame.display.set_icon(pygame.image.load("textures\\Dummy_face.png"))
 display_scroll = [0, 0]
 collision_table = [0, 0]    # [collision on x, collision on y]
 
@@ -19,14 +19,14 @@ player_x = display.get_width()/2
 player_y = display.get_height()/2
 
 clock = pygame.time.Clock()
-font = pygame.font.Font('freesansbold.ttf', 32)
-font_health = pygame.font.Font('freesansbold.ttf', 12)
-font_enemies = pygame.font.Font('freesansbold.ttf', 20)
-font_buttons = pygame.font.Font('dpcomic.ttf', 40)
-font_death = pygame.font.Font('dpcomic.ttf', 120)
-font_items = pygame.font.Font('freesansbold.ttf', 14)
-title_font = pygame.font.Font('StraightToHellSinnerBB.ttf', 180)
-font_dialogue = pygame.font.Font('freesansbold.ttf', 16)
+font = pygame.font.Font('fonts\\freesansbold.ttf', 32)
+font_health = pygame.font.Font('fonts\\freesansbold.ttf', 12)
+font_enemies = pygame.font.Font('fonts\\freesansbold.ttf', 20)
+font_buttons = pygame.font.Font('fonts\\dpcomic.ttf', 40)
+font_death = pygame.font.Font('fonts\\dpcomic.ttf', 120)
+font_items = pygame.font.Font('fonts\\freesansbold.ttf', 14)
+title_font = pygame.font.Font('fonts\\StraightToHellSinnerBB.ttf', 180)
+font_dialogue = pygame.font.Font('fonts\\freesansbold.ttf', 16)
 
 running = True
 game_running = False
